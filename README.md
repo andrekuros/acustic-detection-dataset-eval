@@ -2,21 +2,37 @@ This is an independent acoustic-detection data record and is not part of a softw
 
 # Indoor multirotor acoustic collection (CONCEPTIO / ITA)
 
-Deposit text for `DataSet_Arena_Indoor_v0.2_Extended_Time`, an indoor acoustic collection of thirteen multirotor takes. The audio is not in this repository. Measured tables and a four-page data paper are.
+`DataSet_Arena_Indoor_v0.2_Extended_Time` is an indoor acoustic collection of thirteen multirotor takes. This repository documents that collection. It does not contain the audio, and it does not contain a manuscript or a detection result.
 
-Author line, used as a placeholder in this repository and in `paper/main.tex`: CONCEPTIO Laboratory, Instituto Tecnológico de Aeronáutica, São José dos Campos.
+Author line, used here as a placeholder: CONCEPTIO Laboratory, Instituto Tecnológico de Aeronáutica, São José dos Campos.
 
-## Before Zenodo or IEEE DataPort
+## Before the Zenodo upload
 
-Do these three things before either submission.
+Do these three things before creating the Zenodo record.
 
 1. Confirm the license. The text below marks CC BY 4.0 as the intended license, and it is pending confirmation. This repository does not include a `LICENSE` file, because that file would assert a license the authors have not confirmed.
 2. Replace the author placeholder with the author list the laboratory wants. Do not invent personal names to fill it.
 3. Decide the unresolved Matrice label. The folder, the file stem, and the sidecar disagree. The identifier `matrice350_trajectory_UNRESOLVED` records the conflict. It does not choose a side.
 
-Zenodo is the first archive. The set is 4,923,379,537 bytes (4.92 GB), under the Zenodo 50 GB limit. IEEE DataPort is only a second copy of the same abstract, not a different collection. After Zenodo assigns a DOI, upload `paper/` to Overleaf and replace `\zenododoi` in `paper/main.tex`.
+The set is 4,923,379,537 bytes (4.92 GB), under the Zenodo 50 GB limit.
 
-## Where the audio is
+## What to upload
+
+Upload the dataset, not a paper.
+
+From the share, upload the thirteen session trees plus the eight files that sit beside them: `METODOLOGIA_PROCESSAMENTO.pdf` and seven `especificacoes_oficiais_fabricante.json` sheets.
+
+From this repository, put these files at the root of the same upload, next to the aircraft folders:
+
+- `README.md`
+- `catalog.csv`
+- `channel_audit.csv`
+
+`catalog.csv` is one measured row per session. `channel_audit.csv` is a file-level check of the raw array channels (312 windows). Both describe the recordings. They are not a detector evaluation.
+
+Leave out any manuscript, bibliography, and score table.
+
+## Where the audio is now
 
 Public share, read-only:
 
@@ -35,7 +51,7 @@ DJI_MATRICE_350/10m, 5m e 2m
 
 The first has two spaces before `sem`. Quoted forms are `DJI_MINI_4_PRO%20-%20%20sem%20protetor` and `DJI_MATRICE_350/10m%2C%205m%20e%202m`.
 
-## What was measured
+## Collection
 
 Thirteen takes. Each session folder contains `Brutos`, `Sincronizados`, `Sincronizados/Canais_Separados`, `Processados_Fatias`, `Espectrogramas_Audio_Fragmentado`, and `Espectrogramas_Audio_Geral`.
 
@@ -47,9 +63,7 @@ Slices are exactly 1.000 s. Reference slices are mono float32 at 44.1 kHz. Array
 
 Reference mid-file RMS is a 2.0 s window of the raw reference file, starting at half that file’s duration minus 1 s. Full scale is amplitude 1. On the twelve takes timestamped 22 May 2026 the value is −40.90 to −35.43 dBFS.
 
-Measured totals: raw reference 2623.95 s; raw array 2609.66 s; synchronized reference 2445.73 s; synchronized array 2436.99 s; 2440 reference slices; 2430 array slices; 9740 fragment PNGs; 117 overview PNGs. Session trees hold 14,896 files and 4,923,219,458 bytes. The other eight files are `METODOLOGIA_PROCESSAMENTO.pdf` and seven `especificacoes_oficiais_fabricante.json` sheets.
-
-`catalog.csv` has one measured row per session. Durations there are container lengths in seconds, to six decimal places.
+Measured totals: raw reference 2623.95 s; raw array 2609.66 s; synchronized reference 2445.73 s; synchronized array 2436.99 s; 2440 reference slices; 2430 array slices; 9740 fragment PNGs; 117 overview PNGs. Session trees hold 14,896 files and 4,923,219,458 bytes.
 
 ## Labels that stay as written
 
@@ -100,24 +114,9 @@ On the twelve May takes, middle windows of varying channels lie between −55.67
 
 ## Processing note
 
-`METODOLOGIA_PROCESSAMENTO.pdf` is two pages. It says a 3 kHz high-pass was used only to find a metallic calibration strike, raw files were kept, six channels were extracted, absolute silence was used to flag dead channels, audio was cut into 1 s windows, and a Welch PSD plus RMS board compares the Behringer channel with the six exported channels. It does not say the stored WAV samples were filtered. It does not give room size, microphone coordinates, the Behringer model, the ReSpeaker model, filter order, FFT length, hop, or flight profile. The dead-channel check was not applied as a deletion: zero channels remain in the release.
+`METODOLOGIA_PROCESSAMENTO.pdf` is part of the collection. It is two pages. It says a 3 kHz high-pass was used only to find a metallic calibration strike, raw files were kept, six channels were extracted, absolute silence was used to flag dead channels, audio was cut into 1 s windows, and a Welch PSD plus RMS board compares the Behringer channel with the six exported channels. It does not say the stored WAV samples were filtered. It does not give room size, microphone coordinates, the Behringer model, the ReSpeaker model, filter order, FFT length, hop, or flight profile. The dead-channel check was not applied as a deletion: zero channels remain in the release.
 
-## What this collection does not support
-
-There is one take per cell, no noise-only recording, and no repeated trial. This repository does not report a detector score. Do not add one to the Zenodo abstract, the DataPort abstract, or the paper.
-
-## Files in this repository
-
-| File | Role |
-| --- | --- |
-| `README.md` | This deposit text, including the paste-ready fields below |
-| `catalog.csv` | One measured row per session |
-| `channel_audit.csv` | 312 channel-windows |
-| `paper/main.tex` | IEEEtran data paper |
-| `paper/references.bib` | The four citations used in the paper |
-| `.gitignore` | LaTeX auxiliaries |
-
-`paper/main.tex` is written for pdfLaTeX and BibTeX and compiles to 4 pages. Build from `paper/` with `pdflatex`, `bibtex`, `pdflatex`, `pdflatex`.
+There is one take per cell, no noise-only recording, and no repeated trial. Do not add a detector score to the Zenodo record.
 
 ## Paste-ready Zenodo fields
 
@@ -149,22 +148,8 @@ Keywords:
 acoustic recording; multirotor; microphone array; indoor; unmanned aircraft; Behringer; ReSpeaker
 ```
 
-Description (this is the abstract; IEEE DataPort uses the same text):
+Description:
 
 ```text
-This is an independent acoustic-detection data record and is not part of a software platform. Thirteen indoor multirotor takes were recorded at the CONCEPTIO laboratory of the Instituto Tecnológico de Aeronáutica, São José dos Campos. Each take has a mono Behringer reference channel at 44.1 kHz, IEEE float32, and an eight-channel ReSpeaker array at 16 kHz, 16-bit PCM. Neither microphone model is named in the release. A two-page processing note describes a 3 kHz high-pass used only to find a metallic calibration strike, a six-channel mono export, one-second slices, and a Welch power-spectral-density and RMS board. Raw files were kept, and digitally zero channels were not deleted. Container lengths total 2623.95 s of raw reference audio, 2609.66 s of raw array audio, 2445.73 s of synchronized reference audio, and 2436.99 s of synchronized array audio, with 2440 reference slices and 2430 array slices. Four synchronized pairs differ by at least one second. The take matrice350_trajectory_UNRESOLVED still has conflicting folder, file-stem, and sidecar labels. The collection has one take per cell, no noise-only recording, and no repeated trial, so this record reports no detection score. The intended license is CC BY 4.0, pending confirmation, and the author line is a placeholder.
+This is an independent acoustic-detection data record and is not part of a software platform. Thirteen indoor multirotor takes were recorded at the CONCEPTIO laboratory of the Instituto Tecnológico de Aeronáutica, São José dos Campos. Each take has a mono Behringer reference channel at 44.1 kHz, IEEE float32, and an eight-channel ReSpeaker array at 16 kHz, 16-bit PCM. Neither microphone model is named in the release. A two-page processing note describes a 3 kHz high-pass used only to find a metallic calibration strike, a six-channel mono export, one-second slices, and a Welch power-spectral-density and RMS board. Raw files were kept, and digitally zero channels were not deleted. Container lengths total 2623.95 s of raw reference audio, 2609.66 s of raw array audio, 2445.73 s of synchronized reference audio, and 2436.99 s of synchronized array audio, with 2440 reference slices and 2430 array slices. Four synchronized pairs differ by at least one second. The take matrice350_trajectory_UNRESOLVED still has conflicting folder, file-stem, and sidecar labels. The collection has one take per cell, no noise-only recording, and no repeated trial. This upload is the recordings and the file notes, not a detection evaluation. The intended license is CC BY 4.0, pending confirmation, and the author line is a placeholder.
 ```
-
-Related identifiers: none until Zenodo assigns a DOI. Put that DOI into `paper/main.tex` (`\zenododoi`) and into the DataPort record.
-
-Notes for the Zenodo description or a linked README, if the form allows more than the abstract: point to `catalog.csv`, `channel_audit.csv`, and the processing limits in this file. Upload the audio from the share above. Do not upload this git repository as a substitute for the audio.
-
-## Paste-ready IEEE DataPort fields
-
-Use DataPort only after the Zenodo record exists, and only as a second copy of the same abstract. Use the same title, the same creator placeholder, the same keywords, and the description block above without rewriting it. Dataset size: 4.92 GB. Data type: audio (WAV), with PNG spectrograms, JSON sidecars, and one PDF processing note. In the DataPort “related dataset” or DOI field, enter the Zenodo DOI once it exists. Do not describe DataPort as a different campaign.
-
-Category suggestion, if the form requires one: Signal Processing.
-
-## Paper
-
-`paper/main.tex` and `paper/references.bib` are the Overleaf project. The bibliography is Gebru et al., Communications of the ACM, 2021, doi:10.1145/3458723; Welch, IEEE Transactions on Audio and Electroacoustics, 1967, doi:10.1109/TAU.1967.1161901; Al-Emadi et al., IWCMC 2019, doi:10.1109/IWCMC.2019.8766732; Kolamunna et al., Proceedings of the ACM on Interactive, Mobile, Wearable and Ubiquitous Technologies, 2021, doi:10.1145/3448115. Do not add citations that have not been opened.
