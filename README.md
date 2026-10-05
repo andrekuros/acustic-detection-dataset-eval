@@ -10,7 +10,7 @@ Author line, used here as a placeholder: CONCEPTIO Laboratory, Instituto Tecnol√
 
 `scripts/build_and_upload_zenodo.py` can create an unpublished draft. Do these three things before publishing it.
 
-1. Confirm the license. The text below marks CC BY 4.0 as the intended license, and it is pending confirmation. This repository does not include a `LICENSE` file, because that file would assert a license the authors have not confirmed. The draft leaves the license unset.
+1. Confirm the license. The text below marks CC BY 4.0 as the intended license, and it is pending confirmation. This repository does not include a `LICENSE` file, because that file would assert a license the authors have not confirmed. Zenodo fills an empty license with CC0. That default is not a confirmed choice. Change the license field before publishing.
 2. Replace the author placeholder with the author list the laboratory wants. Do not invent personal names to fill it.
 3. Decide the unresolved Matrice label. The folder, the file stem, and the sidecar disagree. The identifier `matrice350_trajectory_UNRESOLVED` records the conflict. It does not choose a side.
 
@@ -152,7 +152,7 @@ Version: `0.2`
 
 Language: `en` (archive paths are English; manufacturer JSON keys stay Portuguese)
 
-License: leave unset until the authors confirm it. The intended license, pending that confirmation, is Creative Commons Attribution 4.0 International (CC BY 4.0).
+License: leave unset until the authors confirm it. The intended license, pending that confirmation, is Creative Commons Attribution 4.0 International (CC BY 4.0). The deposit API fills an empty license with CC0. Replace that default before publishing.
 
 Keywords:
 

@@ -22,6 +22,7 @@ from urllib.parse import quote, unquote
 from xml.etree import ElementTree as ET
 
 import requests
+from requests.adapters import HTTPAdapter
 
 REPO = Path(__file__).resolve().parents[1]
 WORK = Path("/tmp/zenodo-deposit")
@@ -244,13 +245,26 @@ def upload_draft() -> None:
         "Content-Type": "application/json",
     }
     session = requests.Session()
-    created = zenodo_request(session, "POST", ZENODO, headers=headers, json={})
-    if created.status_code not in (200, 201):
-        sys.exit(f"create deposition failed: HTTP {created.status_code}")
-    deposition = created.json()
+    session.mount("https://", HTTPAdapter(max_retries=0))
+    listed = zenodo_request(session, "GET", ZENODO, headers=headers)
+    if listed.status_code != 200:
+        sys.exit(f"list depositions failed: HTTP {listed.status_code}")
+    matches = [
+        item
+        for item in listed.json()
+        if not item.get("submitted") and (item.get("metadata") or {}).get("title") == TITLE
+    ]
+    if matches:
+        deposition = max(matches, key=lambda item: item["id"])
+        print(f"reuse draft id {deposition['id']}", flush=True)
+    else:
+        created = zenodo_request(session, "POST", ZENODO, headers=headers, json={})
+        if created.status_code not in (200, 201):
+            sys.exit(f"create deposition failed: HTTP {created.status_code}")
+        deposition = created.json()
+        print(f"draft id {deposition['id']}", flush=True)
     dep_id = deposition["id"]
     bucket = deposition["links"]["bucket"]
-    print(f"draft id {dep_id}", flush=True)
 
     metadata = {
         "metadata": {
@@ -276,9 +290,11 @@ def upload_draft() -> None:
             "version": "0.2",
             "language": "eng",
             "notes": (
-                "Draft. License is unset until the authors confirm it. "
-                "The intended license is CC BY 4.0. The creator line is a "
-                "placeholder. matrice350_trajectory_UNRESOLVED is unresolved."
+                "Draft. Zenodo filled the license field with its default, CC0. "
+                "That default is not a confirmed choice. Change it before "
+                "publishing. The intended license is CC BY 4.0. The creator "
+                "line is a placeholder. matrice350_trajectory_UNRESOLVED is "
+                "unresolved."
             ),
         }
     }
@@ -303,18 +319,25 @@ def upload_draft() -> None:
         local = md5(path)
         put_headers = {"Authorization": headers["Authorization"]}
         response = None
-        for attempt in range(4):
-            with path.open("rb") as handle:
-                response = session.put(
-                    f"{bucket}/{quote(path.name)}",
-                    data=handle,
-                    headers=put_headers,
-                    timeout=7200,
-                )
+        for attempt in range(5):
+            print(f"upload {path.name} attempt {attempt + 1}", flush=True)
+            try:
+                with path.open("rb") as handle:
+                    response = session.put(
+                        f"{bucket}/{quote(path.name)}",
+                        data=handle,
+                        headers=put_headers,
+                        timeout=(30, 3600),
+                    )
+            except requests.RequestException as exc:
+                response = None
+                print(f"upload retry {path.name}: {exc.__class__.__name__}", flush=True)
+                time.sleep(15 * (attempt + 1))
+                continue
             if response.status_code in (200, 201):
                 break
-            print(f"upload retry {attempt + 1} {path.name}: HTTP {response.status_code}", flush=True)
-            time.sleep(2 ** attempt)
+            print(f"upload retry {path.name}: HTTP {response.status_code}", flush=True)
+            time.sleep(15 * (attempt + 1))
         if response is None or response.status_code not in (200, 201):
             detail = "" if response is None else response.text[:400]
             code = "none" if response is None else response.status_code
