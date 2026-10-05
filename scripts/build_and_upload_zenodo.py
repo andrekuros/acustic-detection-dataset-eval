@@ -43,7 +43,14 @@ TITLE = (
     "microphone and an eight-channel array "
     "(DataSet_Arena_Indoor_v0.2_Extended_Time)"
 )
-DESCRIPTION = """This is an independent acoustic-detection data record and is not part of a software platform. Thirteen indoor multirotor takes were recorded at the CONCEPTIO laboratory of the Instituto Tecnológico de Aeronáutica, São José dos Campos. Each take has a mono Behringer reference channel at 44.1 kHz, IEEE float32, and an eight-channel ReSpeaker array at 16 kHz, 16-bit PCM. Neither microphone model is named in the release. The zip uses English paths under sessions/SESSION_ID/: raw_reference.wav, raw_array.wav, synchronized_reference.wav, synchronized_array.wav, and sidecar.json, plus processing_methodology.pdf and manufacturer sheets under specifications/. On this record the zip is stored as ordered 500 MiB parts; join those parts before unzipping. One-second slices, the six-channel mono export, and spectrogram pictures are omitted. They are cuts or pictures of the synchronized audio, and catalog.csv still records their counts on the source share. A two-page processing note describes a 3 kHz high-pass used only to find a metallic calibration strike, and a Welch power-spectral-density and RMS board. Raw files were kept, and digitally zero channels were not deleted. Container lengths total 3165.70 s of raw reference audio, 3159.04 s of raw array audio, 2982.16 s of synchronized reference audio, and 2973.53 s of synchronized array audio. Four synchronized pairs differ by at least one second. The take matrice350_trajectory_UNRESOLVED still has a conflicting aircraft label: the sidecar says DJI Flip, while the folder and file stem name a Matrice trajectory. Sidecars on the Neo takes say DJI Neo 2; the copied manufacturer sheet describes DJI Neo (about 135 g), not Neo 2. The collection has one take per cell, no noise-only recording, and no repeated trial. This upload is the recordings and the file notes, not a detection evaluation. The intended license is CC BY 4.0, pending confirmation, and the author line is a placeholder."""
+DESCRIPTION = """<p>Indoor acoustic recordings of multirotor aircraft collected at the CONCEPTIO laboratory, Instituto Tecnológico de Aeronáutica, São José dos Campos (DataSet_Arena_Indoor_v0.2_Extended_Time).</p>
+<p>Thirteen takes were recorded with a mono Behringer reference channel (44.1 kHz, IEEE float32) and an eight-channel ReSpeaker array (16 kHz, 16-bit PCM). The microphone models are not named in the release. The processing note describes the array as a six-microphone circular array. Channels 7 and 8 are retained in the eight-channel files.</p>
+<p>Each take comprises the raw reference, the raw array, the synchronized reference, and the synchronized array, with a JSON sidecar that records the aircraft string, the distance string, the timestamp, and eight channel gains. The archive also includes a two-page processing note and manufacturer specification sheets. Those sheets are copied manufacturer data, not measurements from this campaign.</p>
+<p>The labeled conditions are DJI Flip, DJI Neo 2, and DJI Mini 4 Pro at sidecar distances of 2 m, 5 m, and 10 m; one Mini 4 Pro free flight without a propeller guard; one free flight of Neo 2 and Mini 4 Pro; and one free flight of Flip, Neo 2, Mini 4 Pro, and a Matrice. Distances are the sidecar strings. The release contains no range log and no trajectory log. The free-flight recordings contain no time marks that assign a segment to one aircraft. The unguarded flight has no paired free flight with the guard.</p>
+<p>Container durations are 3165.70 s of raw reference audio, 3159.04 s of raw array audio, 2982.16 s of synchronized reference audio, and 2973.53 s of synchronized array audio. The synchronized duration difference is the difference between those two container lengths. Four takes differ by at least 1 s: flip_5m (+1.79 s), neo2_5m (−4.46 s), mini4pro_5m (+10.56 s), and mini4pro_noguard_free (+1.31 s).</p>
+<p>In session matrice350_trajectory_UNRESOLVED the directory and file stem refer to a DJI Matrice 350 trajectory at 10 m, 5 m, and 2 m, while the sidecar names the aircraft DJI Flip (distance string "10m, 5m e 2m", timestamp 2026-09-16 13:05:40). The manufacturer sheet stored with that directory describes a DJI Matrice 350 RTK. Sidecars for the Neo sessions use the string DJI Neo 2; the manufacturer sheet in that directory describes DJI Neo (about 135 g).</p>
+<p>The processing note states that a 3 kHz high-pass was used only to locate a metallic calibration strike, and it does not state that the stored samples were filtered. Digitally silent channels were flagged and retained. Each condition is represented by one take. The collection contains no noise-only recording and no repeated trial.</p>
+<p>catalog.csv lists session identifiers, source paths, container durations, and the slice counts of the source collection. channel_audit.csv reports peak level and RMS for three 2.0 s windows on each channel of the raw array.</p>"""
 
 SPECS = [
     (
@@ -317,11 +324,8 @@ def upload_draft() -> None:
             "version": "0.2",
             "language": "eng",
             "notes": (
-                "Draft. Zenodo filled the license field with its default, CC0. "
-                "That default is not a confirmed choice. Change it before "
-                "publishing. The intended license is CC BY 4.0. The creator "
-                "line is a placeholder. matrice350_trajectory_UNRESOLVED is "
-                "unresolved."
+                "Each take contains raw_reference.wav, raw_array.wav, "
+                "synchronized_reference.wav, synchronized_array.wav, and sidecar.json."
             ),
         }
     }
