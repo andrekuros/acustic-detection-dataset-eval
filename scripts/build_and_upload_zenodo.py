@@ -18,7 +18,8 @@ import sys
 import time
 import zipfile
 from pathlib import Path
-from urllib.parse import quote
+from urllib.parse import quote, unquote
+from xml.etree import ElementTree as ET
 
 import requests
 
@@ -28,7 +29,7 @@ TREE = WORK / "tree"
 ZIP_NAME = "indoor_multirotor_acoustic_collection_v0.2.zip"
 ZIP_PATH = WORK / ZIP_NAME
 DRAFT_PATH = WORK / "draft.json"
-MANIFEST_PATH = Path("/tmp/ads-measure/manifest.json")
+DAV = {"d": "DAV:"}
 
 WEBDAV = "https://cloud.conceptio.ita.br/public.php/webdav/"
 WEBDAV_USER = "3pmRmz7CokJpZr5"
@@ -39,35 +40,7 @@ TITLE = (
     "microphone and an eight-channel array "
     "(DataSet_Arena_Indoor_v0.2_Extended_Time)"
 )
-DESCRIPTION = (
-    "This is an independent acoustic-detection data record and is not part "
-    "of a software platform. Thirteen indoor multirotor takes were recorded "
-    "at the CONCEPTIO laboratory of the Instituto Tecnológico de Aeronáutica, "
-    "São José dos Campos. Each take has a mono Behringer reference channel "
-    "at 44.1 kHz, IEEE float32, and an eight-channel ReSpeaker array at "
-    "16 kHz, 16-bit PCM. Neither microphone model is named in the release. "
-    "The zip uses English paths under sessions/SESSION_ID/: "
-    "raw_reference.wav, raw_array.wav, synchronized_reference.wav, "
-    "synchronized_array.wav, and sidecar.json, plus "
-    "processing_methodology.pdf and manufacturer sheets under "
-    "specifications/. One-second slices, the six-channel mono export, and "
-    "spectrogram pictures are omitted. They are cuts or pictures of the "
-    "synchronized audio, and catalog.csv still records their counts on the "
-    "source share. A two-page processing note describes a 3 kHz high-pass "
-    "used only to find a metallic calibration strike, and a Welch "
-    "power-spectral-density and RMS board. Raw files were kept, and "
-    "digitally zero channels were not deleted. Container lengths total "
-    "2623.95 s of raw reference audio, 2609.66 s of raw array audio, "
-    "2445.73 s of synchronized reference audio, and 2436.99 s of "
-    "synchronized array audio. Four synchronized pairs differ by at least "
-    "one second. The take matrice350_trajectory_UNRESOLVED still has "
-    "conflicting folder, file-stem, and sidecar labels. Sidecars say DJI "
-    "Neo 2; the copied manufacturer sheet describes DJI Neo (about 135 g), "
-    "not Neo 2. The collection has one take per cell, no noise-only "
-    "recording, and no repeated trial. This upload is the recordings and "
-    "the file notes, not a detection evaluation. The intended license is "
-    "CC BY 4.0, pending confirmation, and the author line is a placeholder."
-)
+DESCRIPTION = """This is an independent acoustic-detection data record and is not part of a software platform. Thirteen indoor multirotor takes were recorded at the CONCEPTIO laboratory of the Instituto Tecnológico de Aeronáutica, São José dos Campos. Each take has a mono Behringer reference channel at 44.1 kHz, IEEE float32, and an eight-channel ReSpeaker array at 16 kHz, 16-bit PCM. Neither microphone model is named in the release. The zip uses English paths under sessions/SESSION_ID/: raw_reference.wav, raw_array.wav, synchronized_reference.wav, synchronized_array.wav, and sidecar.json, plus processing_methodology.pdf and manufacturer sheets under specifications/. One-second slices, the six-channel mono export, and spectrogram pictures are omitted. They are cuts or pictures of the synchronized audio, and catalog.csv still records their counts on the source share. A two-page processing note describes a 3 kHz high-pass used only to find a metallic calibration strike, and a Welch power-spectral-density and RMS board. Raw files were kept, and digitally zero channels were not deleted. Container lengths total 3165.70 s of raw reference audio, 3159.04 s of raw array audio, 2982.16 s of synchronized reference audio, and 2973.53 s of synchronized array audio. Four synchronized pairs differ by at least one second. The take matrice350_trajectory_UNRESOLVED still has a conflicting aircraft label: the sidecar says DJI Flip, while the folder and file stem name a Matrice trajectory. Sidecars on the Neo takes say DJI Neo 2; the copied manufacturer sheet describes DJI Neo (about 135 g), not Neo 2. The collection has one take per cell, no noise-only recording, and no repeated trial. This upload is the recordings and the file notes, not a detection evaluation. The intended license is CC BY 4.0, pending confirmation, and the author line is a placeholder."""
 
 SPECS = [
     (
@@ -106,20 +79,6 @@ def token() -> str:
     if not value:
         sys.exit("Zenodo token is missing. Set ZENODO_TOKEN.")
     return value
-
-
-def load_sizes() -> dict[str, int]:
-    if not MANIFEST_PATH.is_file():
-        return {}
-    sizes: dict[str, int] = {}
-    prefix = "/public.php/webdav/"
-    for entry in json.loads(MANIFEST_PATH.read_text()):
-        if entry.get("is_dir"):
-            continue
-        href = entry["href"]
-        if href.startswith(prefix):
-            sizes[href[len(prefix) :]] = int(entry["size"])
-    return sizes
 
 
 def webdav_url(relative: str) -> str:
@@ -166,26 +125,67 @@ def download(session: requests.Session, relative: str, dest: Path, expected: int
     raise RuntimeError(f"download failed: {relative}: {last_error}")
 
 
-def package_files(rows: list[dict[str, str]]) -> list[tuple[str, str]]:
-    files: list[tuple[str, str]] = []
+def list_files(session: requests.Session, relative: str) -> list[tuple[str, int, str]]:
+    body = (
+        '<?xml version="1.0"?>'
+        '<d:propfind xmlns:d="DAV:"><d:prop>'
+        "<d:getcontentlength/><d:resourcetype/>"
+        "</d:prop></d:propfind>"
+    )
+    response = session.request(
+        "PROPFIND",
+        webdav_url(relative),
+        data=body,
+        headers={"Depth": "1", "Content-Type": "application/xml"},
+        timeout=120,
+    )
+    response.raise_for_status()
+    root = ET.fromstring(response.content)
+    found: list[tuple[str, int, str]] = []
+    for item in root.findall("d:response", DAV):
+        href = unquote(item.find("d:href", DAV).text or "")
+        path = href.split("/public.php/webdav/", 1)[-1].strip("/")
+        if path == relative.strip("/"):
+            continue
+        props = item.find("d:propstat/d:prop", DAV)
+        kind = props.find("d:resourcetype", DAV)
+        if kind is not None and kind.find("d:collection", DAV) is not None:
+            continue
+        length = props.find("d:getcontentlength", DAV)
+        name = path.split("/")[-1]
+        found.append((name, int(length.text), path))
+    return found
+
+
+def pick(entries: list[tuple[str, int, str]], name: str) -> tuple[str, int, str]:
+    hits = [entry for entry in entries if entry[0].lower() == name.lower()]
+    if len(hits) != 1:
+        sys.exit(f"{name}: found {[entry[0] for entry in hits]}")
+    return hits[0]
+
+
+def package_files(session: requests.Session, rows: list[dict[str, str]]) -> list[tuple[str, str, int]]:
+    files: list[tuple[str, str, int]] = []
     for row in rows:
         rel = row["relative_path"]
         stem = row["file_stem"]
         archive = row["archive_dir"]
-        files.extend(
-            [
-                (f"{rel}/Brutos/{stem}.wav", f"{archive}/raw_reference.wav"),
-                (f"{rel}/Brutos/respe_{stem}.wav", f"{archive}/raw_array.wav"),
-                (f"{rel}/Sincronizados/{stem}.wav", f"{archive}/synchronized_reference.wav"),
-                (
-                    f"{rel}/Sincronizados/respe_{stem}.wav",
-                    f"{archive}/synchronized_array.wav",
-                ),
-                (f"{rel}/Brutos/respe_{stem}.json", f"{archive}/sidecar.json"),
-            ]
-        )
-    files.append(("METODOLOGIA_PROCESSAMENTO.pdf", "processing_methodology.pdf"))
-    files.extend(SPECS)
+        raw = list_files(session, f"{rel}/Brutos")
+        synced = list_files(session, f"{rel}/Sincronizados")
+        chosen = [
+            (pick(raw, f"{stem}.wav"), f"{archive}/raw_reference.wav"),
+            (pick(raw, f"respe_{stem}.wav"), f"{archive}/raw_array.wav"),
+            (pick(synced, f"{stem}.wav"), f"{archive}/synchronized_reference.wav"),
+            (pick(synced, f"respe_{stem}.wav"), f"{archive}/synchronized_array.wav"),
+            (pick(raw, f"respe_{stem}.json"), f"{archive}/sidecar.json"),
+        ]
+        for (name, size, source), target in chosen:
+            print(f"map {name} -> {target} ({size} bytes)", flush=True)
+            files.append((source, target, size))
+    for source, target in [("METODOLOGIA_PROCESSAMENTO.pdf", "processing_methodology.pdf"), *SPECS]:
+        info = session.head(webdav_url(source), timeout=60)
+        info.raise_for_status()
+        files.append((source, target, int(info.headers["Content-Length"])))
     return files
 
 
@@ -193,11 +193,10 @@ def fetch_tree() -> None:
     rows = list(csv.DictReader((REPO / "catalog.csv").open(newline="")))
     if len(rows) != 13:
         sys.exit(f"catalog.csv has {len(rows)} rows; expected 13")
-    sizes = load_sizes()
     session = requests.Session()
     session.auth = (WEBDAV_USER, "")
-    for source, archive in package_files(rows):
-        download(session, source, TREE / archive, sizes.get(source))
+    for source, archive, size in package_files(session, rows):
+        download(session, source, TREE / archive, size)
     for name in ("README.md", "catalog.csv", "channel_audit.csv"):
         target = TREE / name
         target.write_bytes((REPO / name).read_bytes())
