@@ -6,31 +6,43 @@ This is an independent acoustic-detection data record and is not part of a softw
 
 Author line, used here as a placeholder: CONCEPTIO Laboratory, Instituto Tecnológico de Aeronáutica, São José dos Campos.
 
-## Before the Zenodo upload
+## Before publishing the Zenodo record
 
-Do these three things before creating the Zenodo record.
+`scripts/build_and_upload_zenodo.py` can create an unpublished draft. Do these three things before publishing it.
 
-1. Confirm the license. The text below marks CC BY 4.0 as the intended license, and it is pending confirmation. This repository does not include a `LICENSE` file, because that file would assert a license the authors have not confirmed.
+1. Confirm the license. The text below marks CC BY 4.0 as the intended license, and it is pending confirmation. This repository does not include a `LICENSE` file, because that file would assert a license the authors have not confirmed. The draft leaves the license unset.
 2. Replace the author placeholder with the author list the laboratory wants. Do not invent personal names to fill it.
 3. Decide the unresolved Matrice label. The folder, the file stem, and the sidecar disagree. The identifier `matrice350_trajectory_UNRESOLVED` records the conflict. It does not choose a side.
 
-The set is 4,923,379,537 bytes (4.92 GB), under the Zenodo 50 GB limit.
+The source share is 4,923,379,537 bytes (4.92 GB). The filtered package below is 2,186,399,519 bytes of audio, the processing note, and the manufacturer sheets, plus this README, `catalog.csv`, and `channel_audit.csv`. That is under the Zenodo 50 GB limit.
 
-## What to upload
+## What is in the Zenodo package
 
-Upload the dataset, not a paper.
+The source share uses Portuguese folder names and keeps several derived copies of the same audio. The deposit uses English names and keeps one copy of each recording.
 
-From the share, upload the thirteen session trees plus the eight files that sit beside them: `METODOLOGIA_PROCESSAMENTO.pdf` and seven `especificacoes_oficiais_fabricante.json` sheets.
+Included, for every take:
 
-From this repository, put these files at the root of the same upload, next to the aircraft folders:
+| Archive file | Source |
+| --- | --- |
+| `sessions/<id>/raw_reference.wav` | `Brutos/<stem>.wav` |
+| `sessions/<id>/raw_array.wav` | `Brutos/respe_<stem>.wav` |
+| `sessions/<id>/synchronized_reference.wav` | `Sincronizados/<stem>.wav` |
+| `sessions/<id>/synchronized_array.wav` | `Sincronizados/respe_<stem>.wav` |
+| `sessions/<id>/sidecar.json` | the raw sidecar; the other two copies are identical |
 
-- `README.md`
-- `catalog.csv`
-- `channel_audit.csv`
+`<id>` is the canonical session id. `catalog.csv` column `archive_dir` is `sessions/<id>`. `relative_path` remains the original share path.
 
-`catalog.csv` is one measured row per session. `channel_audit.csv` is a file-level check of the raw array channels (312 windows). Both describe the recordings. They are not a detector evaluation.
+Also included: `processing_methodology.pdf` (the source file `METODOLOGIA_PROCESSAMENTO.pdf`) and the manufacturer JSON sheets, renamed under `specifications/`. The Mini 4 Pro sheet in the no-guard folder is byte-identical to `specifications/dji_mini_4_pro.json`, so it is not repeated. The JSON keys inside those sheets are still the Portuguese field names from the source. They are copied manufacturer data, not campaign measurements.
 
-Leave out any manuscript, bibliography, and score table.
+Left out:
+
+- One-second slice WAVs. On the takes that were checked, each slice is an exact cut of the synchronized file, and the slice count is the floor of that duration.
+- The six mono channel files. They are a split of channels 1–6 of `synchronized_array.wav`. Channels 7 and 8 remain in that eight-channel file.
+- Spectrogram PNGs. They are pictures rendered from the synchronized audio. The processing note does not give the FFT length, hop, or colormap, so the archive keeps the audio rather than the pictures.
+
+`catalog.csv` still records the slice and PNG counts of the source share. `channel_audit.csv` is a check of the raw array files. Neither file is a detector evaluation.
+
+Zenodo does not store folders, and a record can hold 100 files. The package is therefore one zip, `indoor_multirotor_acoustic_collection_v0.2.zip`, plus this README, the catalog, and the channel audit beside it. `scripts/build_and_upload_zenodo.py` builds that package from the share and uploads it. The upload is a draft until the three items above are settled. The script does not publish the record.
 
 ## Where the audio is now
 
@@ -63,7 +75,7 @@ Slices are exactly 1.000 s. Reference slices are mono float32 at 44.1 kHz. Array
 
 Reference mid-file RMS is a 2.0 s window of the raw reference file, starting at half that file’s duration minus 1 s. Full scale is amplitude 1. On the twelve takes timestamped 22 May 2026 the value is −40.90 to −35.43 dBFS.
 
-Measured totals: raw reference 2623.95 s; raw array 2609.66 s; synchronized reference 2445.73 s; synchronized array 2436.99 s; 2440 reference slices; 2430 array slices; 9740 fragment PNGs; 117 overview PNGs. Session trees hold 14,896 files and 4,923,219,458 bytes.
+Measured totals on the source share: raw reference 2623.95 s; raw array 2609.66 s; synchronized reference 2445.73 s; synchronized array 2436.99 s; 2440 reference slices; 2430 array slices; 9740 fragment PNGs; 117 overview PNGs. Session trees hold 14,896 files and 4,923,219,458 bytes. The Zenodo package keeps the raw and synchronized recordings and omits the slices, mono splits, and PNGs.
 
 ## Labels that stay as written
 
@@ -138,7 +150,7 @@ Publication date: the date of the Zenodo upload. Do not backdate it.
 
 Version: `0.2`
 
-Language: `en` (several folder names are Portuguese)
+Language: `en` (archive paths are English; manufacturer JSON keys stay Portuguese)
 
 License: leave unset until the authors confirm it. The intended license, pending that confirmation, is Creative Commons Attribution 4.0 International (CC BY 4.0).
 
@@ -151,5 +163,5 @@ acoustic recording; multirotor; microphone array; indoor; unmanned aircraft; Beh
 Description:
 
 ```text
-This is an independent acoustic-detection data record and is not part of a software platform. Thirteen indoor multirotor takes were recorded at the CONCEPTIO laboratory of the Instituto Tecnológico de Aeronáutica, São José dos Campos. Each take has a mono Behringer reference channel at 44.1 kHz, IEEE float32, and an eight-channel ReSpeaker array at 16 kHz, 16-bit PCM. Neither microphone model is named in the release. A two-page processing note describes a 3 kHz high-pass used only to find a metallic calibration strike, a six-channel mono export, one-second slices, and a Welch power-spectral-density and RMS board. Raw files were kept, and digitally zero channels were not deleted. Container lengths total 2623.95 s of raw reference audio, 2609.66 s of raw array audio, 2445.73 s of synchronized reference audio, and 2436.99 s of synchronized array audio, with 2440 reference slices and 2430 array slices. Four synchronized pairs differ by at least one second. The take matrice350_trajectory_UNRESOLVED still has conflicting folder, file-stem, and sidecar labels. The collection has one take per cell, no noise-only recording, and no repeated trial. This upload is the recordings and the file notes, not a detection evaluation. The intended license is CC BY 4.0, pending confirmation, and the author line is a placeholder.
+This is an independent acoustic-detection data record and is not part of a software platform. Thirteen indoor multirotor takes were recorded at the CONCEPTIO laboratory of the Instituto Tecnológico de Aeronáutica, São José dos Campos. Each take has a mono Behringer reference channel at 44.1 kHz, IEEE float32, and an eight-channel ReSpeaker array at 16 kHz, 16-bit PCM. Neither microphone model is named in the release. The zip uses English paths under sessions/SESSION_ID/: raw_reference.wav, raw_array.wav, synchronized_reference.wav, synchronized_array.wav, and sidecar.json, plus processing_methodology.pdf and manufacturer sheets under specifications/. One-second slices, the six-channel mono export, and spectrogram pictures are omitted. They are cuts or pictures of the synchronized audio, and catalog.csv still records their counts on the source share. A two-page processing note describes a 3 kHz high-pass used only to find a metallic calibration strike, and a Welch power-spectral-density and RMS board. Raw files were kept, and digitally zero channels were not deleted. Container lengths total 2623.95 s of raw reference audio, 2609.66 s of raw array audio, 2445.73 s of synchronized reference audio, and 2436.99 s of synchronized array audio. Four synchronized pairs differ by at least one second. The take matrice350_trajectory_UNRESOLVED still has conflicting folder, file-stem, and sidecar labels. Sidecars say DJI Neo 2; the copied manufacturer sheet describes DJI Neo (about 135 g), not Neo 2. The collection has one take per cell, no noise-only recording, and no repeated trial. This upload is the recordings and the file notes, not a detection evaluation. The intended license is CC BY 4.0, pending confirmation, and the author line is a placeholder.
 ```
