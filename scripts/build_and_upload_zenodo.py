@@ -255,7 +255,11 @@ def upload_draft() -> None:
         if not item.get("submitted") and (item.get("metadata") or {}).get("title") == TITLE
     ]
     if matches:
-        deposition = max(matches, key=lambda item: item["id"])
+        chosen = max(matches, key=lambda item: item["id"])
+        loaded = zenodo_request(session, "GET", f"{ZENODO}/{chosen['id']}", headers=headers)
+        if loaded.status_code != 200:
+            sys.exit(f"load deposition failed: HTTP {loaded.status_code}")
+        deposition = loaded.json()
         print(f"reuse draft id {deposition['id']}", flush=True)
     else:
         created = zenodo_request(session, "POST", ZENODO, headers=headers, json={})
