@@ -14,6 +14,7 @@ import csv
 import hashlib
 import json
 import os
+import subprocess
 import sys
 import time
 import zipfile
@@ -29,6 +30,7 @@ WORK = Path("/tmp/zenodo-deposit")
 TREE = WORK / "tree"
 ZIP_NAME = "indoor_multirotor_acoustic_collection_v0.2.zip"
 ZIP_PATH = WORK / ZIP_NAME
+PARTS = WORK / "parts"
 DRAFT_PATH = WORK / "draft.json"
 DAV = {"d": "DAV:"}
 
@@ -41,7 +43,7 @@ TITLE = (
     "microphone and an eight-channel array "
     "(DataSet_Arena_Indoor_v0.2_Extended_Time)"
 )
-DESCRIPTION = """This is an independent acoustic-detection data record and is not part of a software platform. Thirteen indoor multirotor takes were recorded at the CONCEPTIO laboratory of the Instituto Tecnológico de Aeronáutica, São José dos Campos. Each take has a mono Behringer reference channel at 44.1 kHz, IEEE float32, and an eight-channel ReSpeaker array at 16 kHz, 16-bit PCM. Neither microphone model is named in the release. The zip uses English paths under sessions/SESSION_ID/: raw_reference.wav, raw_array.wav, synchronized_reference.wav, synchronized_array.wav, and sidecar.json, plus processing_methodology.pdf and manufacturer sheets under specifications/. One-second slices, the six-channel mono export, and spectrogram pictures are omitted. They are cuts or pictures of the synchronized audio, and catalog.csv still records their counts on the source share. A two-page processing note describes a 3 kHz high-pass used only to find a metallic calibration strike, and a Welch power-spectral-density and RMS board. Raw files were kept, and digitally zero channels were not deleted. Container lengths total 3165.70 s of raw reference audio, 3159.04 s of raw array audio, 2982.16 s of synchronized reference audio, and 2973.53 s of synchronized array audio. Four synchronized pairs differ by at least one second. The take matrice350_trajectory_UNRESOLVED still has a conflicting aircraft label: the sidecar says DJI Flip, while the folder and file stem name a Matrice trajectory. Sidecars on the Neo takes say DJI Neo 2; the copied manufacturer sheet describes DJI Neo (about 135 g), not Neo 2. The collection has one take per cell, no noise-only recording, and no repeated trial. This upload is the recordings and the file notes, not a detection evaluation. The intended license is CC BY 4.0, pending confirmation, and the author line is a placeholder."""
+DESCRIPTION = """This is an independent acoustic-detection data record and is not part of a software platform. Thirteen indoor multirotor takes were recorded at the CONCEPTIO laboratory of the Instituto Tecnológico de Aeronáutica, São José dos Campos. Each take has a mono Behringer reference channel at 44.1 kHz, IEEE float32, and an eight-channel ReSpeaker array at 16 kHz, 16-bit PCM. Neither microphone model is named in the release. The zip uses English paths under sessions/SESSION_ID/: raw_reference.wav, raw_array.wav, synchronized_reference.wav, synchronized_array.wav, and sidecar.json, plus processing_methodology.pdf and manufacturer sheets under specifications/. On this record the zip is stored as ordered 500 MiB parts; join those parts before unzipping. One-second slices, the six-channel mono export, and spectrogram pictures are omitted. They are cuts or pictures of the synchronized audio, and catalog.csv still records their counts on the source share. A two-page processing note describes a 3 kHz high-pass used only to find a metallic calibration strike, and a Welch power-spectral-density and RMS board. Raw files were kept, and digitally zero channels were not deleted. Container lengths total 3165.70 s of raw reference audio, 3159.04 s of raw array audio, 2982.16 s of synchronized reference audio, and 2973.53 s of synchronized array audio. Four synchronized pairs differ by at least one second. The take matrice350_trajectory_UNRESOLVED still has a conflicting aircraft label: the sidecar says DJI Flip, while the folder and file stem name a Matrice trajectory. Sidecars on the Neo takes say DJI Neo 2; the copied manufacturer sheet describes DJI Neo (about 135 g), not Neo 2. The collection has one take per cell, no noise-only recording, and no repeated trial. This upload is the recordings and the file notes, not a detection evaluation. The intended license is CC BY 4.0, pending confirmation, and the author line is a placeholder."""
 
 SPECS = [
     (
@@ -216,6 +218,27 @@ def build_zip() -> None:
     print(f"zip {ZIP_PATH} files={count} bytes={ZIP_PATH.stat().st_size}", flush=True)
 
 
+def zip_parts() -> list[Path]:
+    PARTS.mkdir(parents=True, exist_ok=True)
+    current = sorted(PARTS.glob(ZIP_NAME + ".*"))
+    if current and min(path.stat().st_mtime for path in current) >= ZIP_PATH.stat().st_mtime:
+        return current
+    for path in current:
+        path.unlink()
+    subprocess.run(
+        ["split", "-b", "500M", "-d", "-a", "2", str(ZIP_PATH), str(PARTS / (ZIP_NAME + "."))],
+        check=True,
+    )
+    parts = sorted(PARTS.glob(ZIP_NAME + ".*"))
+    if not parts:
+        sys.exit("split produced no parts")
+    print(
+        f"parts {len(parts)} " + " ".join(f"{path.name}:{path.stat().st_size}" for path in parts),
+        flush=True,
+    )
+    return parts
+
+
 def md5(path: Path) -> str:
     digest = hashlib.md5()
     with path.open("rb") as handle:
@@ -313,7 +336,7 @@ def upload_draft() -> None:
         sys.exit(f"metadata update failed: HTTP {updated.status_code} {updated.text[:400]}")
 
     uploads = [
-        ZIP_PATH,
+        *zip_parts(),
         REPO / "README.md",
         REPO / "catalog.csv",
         REPO / "channel_audit.csv",
