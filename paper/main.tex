@@ -1,0 +1,292 @@
+\documentclass[conference]{IEEEtran}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{cite}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{flushend}
+\setlength{\emergencystretch}{2em}
+
+% Replace this placeholder after Zenodo assigns a DOI.
+\newcommand{\zenododoi}{[DOI pending]}
+
+\begin{document}
+
+\title{Indoor Acoustic Recordings of Multirotor Aircraft with a Reference Microphone and an Eight-Channel Array}
+
+\author{CONCEPTIO Laboratory, Instituto Tecnológico de Aeronáutica, São José dos Campos}
+
+\maketitle
+
+\begin{abstract}
+This is an independent acoustic-detection data record and is not part of a software platform.
+Thirteen indoor multirotor takes were recorded at the CONCEPTIO laboratory of the Instituto Tecnológico de Aeronáutica, São José dos Campos.
+Each take has a mono Behringer reference channel at 44.1\,kHz, IEEE float32, and an eight-channel ReSpeaker array at 16\,kHz, 16-bit PCM.
+Neither microphone model is named in the release.
+A two-page processing note describes a 3\,kHz high-pass used only to find a metallic calibration strike, a six-channel mono export, one-second slices, and a Welch power-spectral-density and RMS board.
+Raw files were kept, and digitally zero channels were not deleted.
+Container lengths total 2623.95\,s of raw reference audio, 2609.66\,s of raw array audio, 2445.73\,s of synchronized reference audio, and 2436.99\,s of synchronized array audio, with 2440 reference slices and 2430 array slices.
+Four synchronized pairs differ by at least one second.
+The take \texttt{matrice350\_trajectory\_UNRESOLVED} still has conflicting folder, file-stem, and sidecar labels.
+The collection has one take per cell, no noise-only recording, and no repeated trial, so this paper reports no detection score.
+The intended license is CC BY 4.0, pending confirmation, and the author line above is a placeholder.
+\end{abstract}
+
+\begin{IEEEkeywords}
+acoustic recording, multirotor aircraft, microphone array, indoor measurement
+\end{IEEEkeywords}
+
+\section{Introduction}
+Acoustic detection and identification of multirotor aircraft is the setting in which this collection was made~\cite{alemadi2019audio,kolamunna2021droneprint}.
+Those works are cited only to name the task.
+This collection has one take in each cell of its design, no recording of the room alone, and no repeated trial.
+It therefore cannot support a detection score, and none is reported.
+
+A record of this kind has to say what was captured and what the files do not establish~\cite{gebru2021datasheets}.
+The text below is that statement for the share \texttt{DataSet\_Arena\_Indoor\_\allowbreak v0.2\_Extended\_Time}: the sensors, the thirteen takes, the processing note, the measured container lengths, and the labels that remain unresolved.
+The audio itself is not part of the manuscript repository.
+The archive DOI is \zenododoi.
+
+\section{Sensors and takes}
+The room size, the microphone coordinates, and the flight profile are not in the processing note or the sidecars.
+Two sensors were recorded together.
+The reference is a Behringer microphone whose model is not named.
+Its files are mono, 44.1\,kHz, IEEE float32, WAVE format~3.
+The array is a ReSpeaker device whose model is not named.
+Its files are eight channels, 16\,kHz, 16-bit PCM.
+The processing note calls the array a six-microphone circular array.
+Only channels~1--6 are exported as mono files.
+Channels~7 and~8 stay inside the eight-channel raw, synchronized, and slice files, and they are never written as their own mono files.
+Every sidecar lists eight gains, all equal to one.
+
+Table~\ref{tab:takes} lists the thirteen takes.
+The row names are the canonical identifiers.
+The string \texttt{LIVRE} means free flight.
+The strings \texttt{2m}, \texttt{5m}, and \texttt{10m} are sidecar text.
+There is no range log.
+
+Sidecars on the Flip takes say ``DJI FPV Flip.''
+The manufacturer sheet names DJI Flip, and that is the canonical aircraft name.
+The sidecar string is kept in \texttt{catalog.csv}.
+Sidecars on the Neo takes say ``DJI Neo 2.''
+The manufacturer sheet stored in \texttt{DJI\_NEO\_2/} describes DJI Neo, about 135\,g, not Neo~2.
+Those figures are copied manufacturer data, not campaign measurements, and they are not Neo~2 specifications.
+The same distinction applies wherever that Neo block is repeated.
+\texttt{mini4pro\_noguard\_free} is a free flight without a propeller guard.
+There is no matched free flight with the guard, so the guard is confounded with the flight pattern.
+The two multi-aircraft takes have no time marks that assign a segment to one airframe.
+
+The unresolved take is the folder \texttt{DJI\_MATRICE\_350/10m, 5m e 2m} and the file stem \texttt{DJI\_MATRICE\_10M\_5M\_2M}.
+Its sidecar says \texttt{"drone": "DJI Flip"}, \texttt{"distancia": "2m"}, and timestamp 2026-04-30 15:34:23.
+This paper does not choose between the folder and the sidecar.
+The take is the short one: 80.63\,s of raw reference audio, with mid-file RMS $-21.87$\,dBFS.
+The other twelve sidecars are timestamped 22~May 2026.
+Two paths contain spaces and must be URL-quoted: \texttt{DJI\_MINI\_4\_PRO -\ \ sem protetor}, which has two spaces before \texttt{sem}, and \texttt{DJI\_MATRICE\_350/10m, 5m e 2m}.
+
+\begin{table*}[t]
+\centering
+\caption{Container lengths, in seconds, and the reference mid-file RMS. $\Delta$ is synchronized reference duration minus synchronized array duration. Slice counts are the floors of the synchronized durations. The catalog has the unrounded values.}
+\label{tab:takes}
+\footnotesize
+\setlength{\tabcolsep}{3.5pt}
+\begin{tabular}{@{}lrrrrrrrr@{}}
+\toprule
+Take & Raw ref. & Raw arr. & Sync ref. & Sync arr. & $\Delta$ & Slices & RMS \\
+\midrule
+\texttt{flip\_2m} & 202.41 & 203.01 & 193.71 & 193.81 & $-0.10$ & 193/193 & $-37.04$ \\
+\texttt{flip\_5m} & 195.25 & 197.76 & 184.09 & 182.30 & $+1.79$ & 184/182 & $-40.62$ \\
+\texttt{flip\_10m} & 193.23 & 194.11 & 180.35 & 180.47 & $-0.11$ & 180/180 & $-38.56$ \\
+\texttt{neo2\_2m} & 195.09 & 193.92 & 179.99 & 180.03 & $-0.03$ & 179/180 & $-37.08$ \\
+\texttt{neo2\_5m} & 186.51 & 185.41 & 172.35 & 176.81 & $-4.46$ & 172/176 & $-40.14$ \\
+\texttt{neo2\_10m} & 196.82 & 195.84 & 182.36 & 182.34 & $+0.03$ & 182/182 & $-40.90$ \\
+\texttt{mini4pro\_2m} & 196.65 & 193.28 & 180.13 & 180.17 & $-0.04$ & 180/180 & $-36.77$ \\
+\texttt{mini4pro\_5m} & 194.44 & 192.77 & 180.36 & 169.80 & $+10.56$ & 180/169 & $-38.69$ \\
+\texttt{mini4pro\_10m} & 194.35 & 193.22 & 179.84 & 179.88 & $-0.04$ & 179/179 & $-39.43$ \\
+\texttt{mini4pro\_noguard\_free} & 186.30 & 185.15 & 172.01 & 170.70 & $+1.31$ & 172/170 & $-38.47$ \\
+\texttt{multi\_neo2\_mini4pro\_free} & 227.86 & 223.62 & 209.42 & 209.49 & $-0.06$ & 209/209 & $-39.29$ \\
+\texttt{multi\_flip\_neo2\_mini4pro\_matrice\_free} & 374.41 & 373.82 & 358.60 & 358.69 & $-0.09$ & 358/358 & $-35.43$ \\
+\texttt{matrice350\_trajectory\_UNRESOLVED} & 80.63 & 77.76 & 72.50 & 72.52 & $-0.02$ & 72/72 & $-21.87$ \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\section{Files and the processing note}
+Each session folder contains six directories.
+\texttt{Brutos} holds the raw pair.
+\texttt{Sincronizados} holds the aligned pair, and \texttt{Canais\_Separados} under it holds the six mono array channels.
+\texttt{Processados\_Fatias} holds the one-second slices.
+\texttt{Espectrogramas\_Audio\_Fragmentado} holds the per-slice PNGs, and \texttt{Espectrogramas\_Audio\_Geral} holds the nine overview PNGs.
+The session trees hold 14{,}896 files and 4{,}923{,}219{,}458 bytes.
+Eight further files sit beside those trees: \texttt{METODOLOGIA\_PROCESSAMENTO.pdf} and seven \texttt{especificacoes\_oficiais\_fabricante.json} sheets.
+The whole share is 14{,}904 files and 4{,}923{,}379{,}537 bytes.
+
+Every slice file is exactly 1.000\,s.
+Reference slices are mono float32 at 44.1\,kHz.
+Array slices are eight-channel 16-bit PCM at 16\,kHz, not the six-channel mono export.
+For every session and both sensors, the slice count equals the floor of that sensor's synchronized duration.
+Each slice has two fragment PNGs, one plain and one with the suffix \texttt{\_TECNICO}.
+Each session has nine overview PNGs.
+The totals are 2{,}440 reference slices, 2{,}430 array slices, 9{,}740 fragment PNGs, and 117 overview PNGs.
+
+The processing note is two pages.
+It says that a 3\,kHz high-pass was used only to find a metallic calibration strike, that the raw files were kept, that six channels were extracted, that absolute silence was used to flag dead channels, that the audio was cut into 1\,s windows, and that a Welch power-spectral-density estimate~\cite{welch1967periodogram} plus an RMS board compares the Behringer channel with the six exported channels.
+It does not say that the stored WAV samples were filtered.
+It does not give the room size, the microphone coordinates, the Behringer model, the ReSpeaker model, the filter order, the FFT length, the hop, or the flight profile.
+The dead-channel check was not applied as a deletion: zero channels remain in the release.
+On \texttt{neo2\_2m}, channels~5 and~6 are digital zeros on the audited windows and are still exported.
+
+\section{Measured durations and channels}
+Durations in Table~\ref{tab:takes} are container lengths, sample frames divided by the sample rate.
+$\Delta$, also called \texttt{sync\_duration\_delta\_s} in the catalog, is the synchronized reference duration minus the synchronized array duration.
+It is a difference of container lengths, not a re-measured residual of the calibration impulse.
+Four pairs differ by at least 1\,s: \texttt{flip\_5m} $+1.79$\,s, \texttt{neo2\_5m} $-4.46$\,s, \texttt{mini4pro\_5m} $+10.56$\,s, and \texttt{mini4pro\_noguard\_free} $+1.31$\,s.
+The other nine are within 0.12\,s.
+Slice indexes are not a shared time base on those four takes.
+\texttt{neo2\_2m} differs by only 0.03\,s, but the floors still differ, 179 reference slices against 180 array slices, because the two containers fall on opposite sides of an integer second.
+
+The reference mid-file RMS is a 2.0\,s window of the raw reference file, starting at half that file's duration minus 1\,s, with full scale equal to amplitude 1.
+On the twelve May takes the value lies between $-40.90$ and $-35.43$\,dBFS.
+On the unresolved take it is $-21.87$\,dBFS.
+
+\texttt{channel\_audit.csv} has 312 rows: thirteen takes, channels~1--8, and three 2.0\,s windows of 32{,}000 frames on the raw eight-channel file.
+The windows start at 1.0\,s, at mid-file minus 1\,s, and at 3\,s before the end.
+A window is \texttt{digital\_zero} if its peak is 0, \texttt{idle} if its peak is at most 2, \texttt{stuck\_constant} if every sample is the same value, and \texttt{signal} otherwise.
+A channel is varying only when every window is \texttt{signal}, the loudest window is above $-80$\,dBFS, and the three windows span at least 3\,dB.
+Flat means a span under 2\,dB and a level below $-58$\,dBFS.
+Near-silent means the loudest window is at or below $-80$\,dBFS.
+Channels that are entirely zero, idle, or stuck keep that label.
+
+Table~\ref{tab:varying} lists the varying channels.
+On the twelve May takes, middle windows of varying channels lie between $-55.67$ and $-47.01$\,dBFS, start windows between $-67.83$ and $-60.39$\,dBFS, and end windows between $-62.38$ and $-34.16$\,dBFS.
+Level is not monotonic.
+On the unresolved take, middle windows of channels~1--5 lie between $-38.54$ and $-37.58$\,dBFS.
+Channels~7 and~8 of that take are not varying: the window at 1.0\,s is idle, while the loudest windows are $-74.00$ and $-75.84$\,dBFS.
+None of these level changes is a flight profile.
+There is no trajectory log.
+
+\begin{table}[t]
+\centering
+\caption{Channels classed as varying. All three windows are signal, the loudest window is above $-80$\,dBFS, and the span is at least 3\,dB.}
+\label{tab:varying}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}p{0.55\columnwidth}p{0.38\columnwidth}@{}}
+\toprule
+Take & Channels \\
+\midrule
+\texttt{flip\_2m} & 1, 5, 6, 7, 8 \\
+\texttt{flip\_5m} & 5, 6, 7, 8 \\
+\texttt{flip\_10m} & 1--5 \\
+\texttt{neo2\_2m} & 1, 2, 7, 8 \\
+\texttt{neo2\_5m} & 3--6 \\
+\texttt{neo2\_10m} & 1, 2, 3, 7, 8 \\
+\texttt{mini4pro\_2m} & 1, 2, 3, 7, 8 \\
+\texttt{mini4pro\_5m} & 3--7 \\
+\texttt{mini4pro\_10m} & 1--5 \\
+\texttt{mini4pro\_noguard\_free} & 7 \\
+\texttt{multi\_neo2\_mini4pro\_free} & 1--5 \\
+\texttt{multi\_flip\_\allowbreak neo2\_\allowbreak mini4pro\_\allowbreak matrice\_free} & 1--5 \\
+\texttt{matrice350\_\allowbreak trajectory\_\allowbreak UNRESOLVED} & 1--5 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Across the 104 channels, 58 are varying, 21 are idle, 10 are flat, five are stuck at a constant sample, four are near-silent, four are digital zeros, and two are mixed.
+The four digital-zero channels are \texttt{neo2\_2m} channels~5 and~6, which are still exported, and \texttt{neo2\_5m} channels~1 and~2.
+The two mixed channels are 7 and~8 on the unresolved take.
+Table~\ref{tab:varying} is the varying set.
+On \texttt{mini4pro\_noguard\_free} the only varying channel is channel~7, and the mono export does not include it.
+
+\section{What the files do not establish}
+A row of Table~\ref{tab:takes} is one take.
+It is not a repeated trial, and the distance entry is only the sidecar string \texttt{2m}, \texttt{5m}, \texttt{10m}, or \texttt{LIVRE}.
+The share has no log of slant range, height, or time on condition.
+\texttt{mini4pro\_noguard\_free} does not isolate the propeller guard, because the flight pattern changes with it.
+The two multi-aircraft takes are single continuous files.
+No marker says which airframe is audible in which second.
+
+The unresolved take cannot be filed as a DJI Flip at 2\,m, and it cannot be filed as a Matrice trajectory, until that choice is made outside this paper.
+Its manufacturer JSON names a DJI Matrice 350 RTK.
+Its sidecar names a DJI Flip at 2\,m.
+Both strings are in the release.
+Neither is promoted here to a measurement.
+
+Each sidecar is a JSON object with \texttt{timestamp}, \texttt{drone}, \texttt{distancia}, and \texttt{gains}.
+The same object is stored three times in each session, beside the raw array file, the synchronized array file, and the slices.
+The three copies match.
+Gains are eight ones on every take.
+Twelve timestamps fall on 22~May 2026.
+The unresolved timestamp is 30~April 2026, 15:34:23.
+
+The nine overview PNGs follow one pattern on every take: one image of the reference file, one of the array file, one spectrogram image for each of channels~1--6, and one comparative board whose name ends in \texttt{GRAFICO\_COMPARATIVO\_TECNICO}.
+Fragment PNGs are two per slice, not two per channel.
+The plain image and the \texttt{\_TECNICO} image are the pair described in the processing note.
+This paper does not remeasure those images.
+
+The high-pass in the processing note was a tool for finding the calibration strike.
+The synchronized durations in Table~\ref{tab:takes} are the container lengths of the files kept after alignment.
+They are not a new measurement of the strike residual.
+Where the synchronized containers differ by a second or more, a shared slice index does not pair a reference slice with an array slice.
+
+There is no noise-only file.
+An idle window in the channel audit is a property of that 2\,s excerpt of an aircraft take, not a recording of the empty room.
+Stuck channels, with constant peaks of 4, 6, or 24 on the audited windows, were not removed.
+The ten flat channels sit near $-61$\,dBFS, and on these windows their span is under 1\,dB.
+That is an audit result, not a microphone calibration.
+
+\section{Deposit}
+Three decisions block submission.
+The license named in this paper is CC BY 4.0, and it is pending confirmation, so it must not be selected on the archive form until the authors confirm it.
+The author line is a placeholder for CONCEPTIO Laboratory, Instituto Tecnológico de Aeronáutica, São José dos Campos.
+Replace that line with the laboratory's own author list, and do not invent personal names to fill it.
+Decide what \texttt{matrice350\_trajectory\_UNRESOLVED} refers to before either archive receives the files.
+
+Zenodo is the first archive.
+The audio is 4.92\,GB, under the 50\,GB Zenodo limit.
+IEEE DataPort, if used at all, is only a second copy of the same abstract, and only after the Zenodo record exists.
+The six mono exports are 16-bit PCM at 16\,kHz, and each file has the same frame count as the synchronized eight-channel file.
+Upload \texttt{paper/} to Overleaf and replace \verb|\zenododoi| after Zenodo assigns the identifier \zenododoi.
+
+The catalog keeps one row per take.
+Durations there are unrounded container lengths, in seconds, together with the slice counts, the fragment-PNG count, the overview-PNG count, and the file and byte totals of that session tree.
+The channel audit keeps one row per channel-window: the take, the channel, the window name, the start time, 32{,}000 frames, the absolute peak, the RMS, the window label, and the channel class.
+An empty RMS cell is a digital zero.
+
+Each specification JSON sits in the aircraft folder, not in the distance folder.
+The aircraft folders are:
+\begin{itemize}
+\item \texttt{DJI\_FPV\_FLIP}, \texttt{DJI\_NEO\_2}, and \texttt{DJI\_MINI\_4\_PRO}, with takes at \texttt{2m}, \texttt{5m}, and \texttt{10m};
+\item the guard-off Mini folder, one free-flight take;
+\item \texttt{DJI\_NEO\_2\_E\_\allowbreak DJI\_MINI\_4\_PRO} and \texttt{DJI\_FLIP\_NEO\_\allowbreak MINI\_MATRICE}, one free-flight take each;
+\item \texttt{DJI\_MATRICE\_350}, the unresolved take.
+\end{itemize}
+Those seven sheets and the two-page processing PDF are the eight files outside the session trees.
+This manuscript's repository does not contain the WAV or PNG bytes.
+The audio share is what goes to Zenodo.
+
+An array slice has eight channels at 16\,kHz.
+It is not the six-file mono export.
+Channels~7 and~8, including channels that are digital zeros or idle, remain in the slice.
+Pooling the unresolved take with the twelve May takes also mixes in a shorter file whose reference mid-file level is $-21.87$\,dBFS, against a May range of $-40.90$ to $-35.43$\,dBFS, while the aircraft label is still unsettled.
+
+\section{Reproducing the tables}
+Container duration is the frame count in the \texttt{data} chunk divided by the sample rate.
+On every raw reference file the \texttt{fmt} chunk is followed by a \texttt{fact} chunk and a \texttt{PEAK} chunk, so the samples start at byte 80.
+On every synchronized reference file the samples start at byte 58.
+Both are WAVE format~3, mono, 44.1\,kHz.
+The \texttt{PEAK} chunk is not a calibration.
+Array containers, array slices, and the six mono exports are PCM, format~1, 16\,kHz, with a 44-byte header.
+Array files are eight channels, interleaved.
+A 2.0\,s audit window is 32{,}000 frames.
+The three starts are 1.0\,s, half the raw-array duration minus 1\,s, and 3\,s before the end of that file.
+The reference mid-file window uses the same length and the same half-duration rule on the raw reference file.
+Integer RMS in dBFS is $20\log_{10}(\mathrm{rms}/32768)$.
+Float RMS in dBFS is $20\log_{10}(\mathrm{rms})$ with full scale equal to 1.
+The window label uses the absolute peak of that window only: 0, then at most 2, then a constant value, then signal.
+Channel classes are computed from those three labels and from the span of the finite levels, as defined above.
+Slice files of one sensor and one session are a single byte length, and the opened headers are exactly 1.000\,s, so the floor counts in Table~\ref{tab:takes} are also the file counts.
+
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+
+\end{document}
