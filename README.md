@@ -42,11 +42,7 @@ Left out:
 
 `catalog.csv` still records the slice and PNG counts of the source share. `channel_audit.csv` is a check of the raw array files. Neither file is a detector evaluation.
 
-Zenodo does not store folders, and a record can hold 100 files. The package is therefore one zip, `indoor_multirotor_acoustic_collection_v0.2.zip`, plus this README, the catalog, and the channel audit beside it. A single upload of that zip did not finish, so the draft stores it as ordered 500 MiB parts named `indoor_multirotor_acoustic_collection_v0.2.zip.00` and following. Join the parts before unzipping:
-
-```text
-cat indoor_multirotor_acoustic_collection_v0.2.zip.* > indoor_multirotor_acoustic_collection_v0.2.zip
-```
+Zenodo does not store folders. Each session is therefore its own zip, `<id>.zip`, and that zip opens directly. Inside, the directory `<id>/` holds the five files above. `catalog.csv` column `archive_dir` is that directory. The processing note, the manufacturer JSON files, this README, the catalog, and the channel audit are separate files on the record.
 
 `scripts/build_and_upload_zenodo.py` builds that package from the share and uploads the draft. The script does not publish the record.
 
@@ -172,6 +168,6 @@ Description:
 <p>Indoor acoustic recordings of multirotor aircraft collected at the CONCEPTIO laboratory, Instituto Tecnológico de Aeronáutica, São José dos Campos (DataSet_Arena_Indoor_v0.2_Extended_Time).</p>
 <p>Thirteen takes were recorded with a mono Behringer reference channel (44.1 kHz, IEEE float32) and an eight-channel ReSpeaker array (16 kHz, 16-bit PCM). Microphone models are not named. The array is described as a six-microphone circular array; channels 7 and 8 remain in the eight-channel files. Raw reference audio totals 3165.70 s. Each condition is a single take.</p>
 <p>The conditions are DJI Flip, DJI Neo 2, and DJI Mini 4 Pro at labeled distances of 2 m, 5 m, and 10 m; one Mini 4 Pro free flight without a propeller guard; one free flight of Neo 2 and Mini 4 Pro; and one free flight of Flip, Neo 2, Mini 4 Pro, and a Matrice. Distances are sidecar labels. No range or trajectory log is included.</p>
-<p>Each session contains raw_reference.wav, raw_array.wav, synchronized_reference.wav, synchronized_array.wav, and sidecar.json. catalog.csv lists the sessions and durations. In matrice350_trajectory_UNRESOLVED the directory names a Matrice trajectory and the sidecar names DJI Flip. Neo sidecars say DJI Neo 2; the manufacturer sheet describes DJI Neo. Four synchronized pairs differ by at least 1 s: flip_5m, neo2_5m, mini4pro_5m, and mini4pro_noguard_free.</p>
-<p>The archive is stored as ordered parts indoor_multirotor_acoustic_collection_v0.2.zip.00 to .05. Join them before unzipping: cat indoor_multirotor_acoustic_collection_v0.2.zip.* &gt; indoor_multirotor_acoustic_collection_v0.2.zip</p>
+<p>Each session is a separate zip named with its session id, such as flip_2m.zip. The zip contains that directory with raw_reference.wav, raw_array.wav, synchronized_reference.wav, synchronized_array.wav, and sidecar.json. catalog.csv lists the sessions and durations. processing_methodology.pdf is the processing note, and the specification JSON files are copied manufacturer sheets.</p>
+<p>In matrice350_trajectory_UNRESOLVED the directory names a Matrice trajectory and the sidecar names DJI Flip. Neo sidecars say DJI Neo 2; the manufacturer sheet describes DJI Neo. Four synchronized pairs differ by at least 1 s: flip_5m, neo2_5m, mini4pro_5m, and mini4pro_noguard_free.</p>
 ```

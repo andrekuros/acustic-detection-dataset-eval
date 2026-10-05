@@ -14,7 +14,6 @@ import csv
 import hashlib
 import json
 import os
-import subprocess
 import sys
 import time
 import zipfile
@@ -28,10 +27,11 @@ from requests.adapters import HTTPAdapter
 REPO = Path(__file__).resolve().parents[1]
 WORK = Path("/tmp/zenodo-deposit")
 TREE = WORK / "tree"
-ZIP_NAME = "indoor_multirotor_acoustic_collection_v0.2.zip"
-ZIP_PATH = WORK / ZIP_NAME
-PARTS = WORK / "parts"
+SESSION_ZIPS = WORK / "session-zips"
 DRAFT_PATH = WORK / "draft.json"
+OBSOLETE = [
+    f"indoor_multirotor_acoustic_collection_v0.2.zip.{index:02d}" for index in range(6)
+]
 DAV = {"d": "DAV:"}
 
 WEBDAV = "https://cloud.conceptio.ita.br/public.php/webdav/"
@@ -46,8 +46,8 @@ TITLE = (
 DESCRIPTION = """<p>Indoor acoustic recordings of multirotor aircraft collected at the CONCEPTIO laboratory, Instituto Tecnológico de Aeronáutica, São José dos Campos (DataSet_Arena_Indoor_v0.2_Extended_Time).</p>
 <p>Thirteen takes were recorded with a mono Behringer reference channel (44.1 kHz, IEEE float32) and an eight-channel ReSpeaker array (16 kHz, 16-bit PCM). Microphone models are not named. The array is described as a six-microphone circular array; channels 7 and 8 remain in the eight-channel files. Raw reference audio totals 3165.70 s. Each condition is a single take.</p>
 <p>The conditions are DJI Flip, DJI Neo 2, and DJI Mini 4 Pro at labeled distances of 2 m, 5 m, and 10 m; one Mini 4 Pro free flight without a propeller guard; one free flight of Neo 2 and Mini 4 Pro; and one free flight of Flip, Neo 2, Mini 4 Pro, and a Matrice. Distances are sidecar labels. No range or trajectory log is included.</p>
-<p>Each session contains raw_reference.wav, raw_array.wav, synchronized_reference.wav, synchronized_array.wav, and sidecar.json. catalog.csv lists the sessions and durations. In matrice350_trajectory_UNRESOLVED the directory names a Matrice trajectory and the sidecar names DJI Flip. Neo sidecars say DJI Neo 2; the manufacturer sheet describes DJI Neo. Four synchronized pairs differ by at least 1 s: flip_5m, neo2_5m, mini4pro_5m, and mini4pro_noguard_free.</p>
-<p>The archive is stored as ordered parts indoor_multirotor_acoustic_collection_v0.2.zip.00 to .05. Join them before unzipping: cat indoor_multirotor_acoustic_collection_v0.2.zip.* &gt; indoor_multirotor_acoustic_collection_v0.2.zip</p>"""
+<p>Each session is a separate zip named with its session id, such as flip_2m.zip. The zip contains that directory with raw_reference.wav, raw_array.wav, synchronized_reference.wav, synchronized_array.wav, and sidecar.json. catalog.csv lists the sessions and durations. processing_methodology.pdf is the processing note, and the specification JSON files are copied manufacturer sheets.</p>
+<p>In matrice350_trajectory_UNRESOLVED the directory names a Matrice trajectory and the sidecar names DJI Flip. Neo sidecars say DJI Neo 2; the manufacturer sheet describes DJI Neo. Four synchronized pairs differ by at least 1 s: flip_5m, neo2_5m, mini4pro_5m, and mini4pro_noguard_free.</p>"""
 
 SPECS = [
     (
@@ -210,37 +210,42 @@ def fetch_tree() -> None:
         print(f"copied {name}", flush=True)
 
 
-def build_zip() -> None:
-    if ZIP_PATH.is_file():
-        ZIP_PATH.unlink()
-    count = 0
-    with zipfile.ZipFile(ZIP_PATH, "w", compression=zipfile.ZIP_STORED, allowZip64=True) as archive:
-        for path in sorted(TREE.rglob("*")):
-            if path.is_file() and not path.name.endswith(".part"):
-                archive.write(path, path.relative_to(TREE).as_posix())
-                count += 1
-    print(f"zip {ZIP_PATH} files={count} bytes={ZIP_PATH.stat().st_size}", flush=True)
+def session_archives() -> list[Path]:
+    SESSION_ZIPS.mkdir(parents=True, exist_ok=True)
+    rows = list(csv.DictReader((REPO / "catalog.csv").open(newline="")))
+    archives: list[Path] = []
+    for row in rows:
+        session_id = row["session_id"]
+        source = TREE / "sessions" / session_id
+        files = sorted(path for path in source.iterdir() if path.is_file())
+        if len(files) != 5:
+            sys.exit(f"{session_id}: expected 5 files, found {[path.name for path in files]}")
+        dest = SESSION_ZIPS / f"{session_id}.zip"
+        newest = max(path.stat().st_mtime for path in files)
+        if not dest.is_file() or dest.stat().st_mtime < newest:
+            with zipfile.ZipFile(dest, "w", compression=zipfile.ZIP_STORED, allowZip64=True) as archive:
+                for path in files:
+                    archive.write(path, f"{session_id}/{path.name}")
+        print(f"zip {dest.name} {dest.stat().st_size}", flush=True)
+        archives.append(dest)
+    return archives
 
 
-def zip_parts() -> list[Path]:
-    PARTS.mkdir(parents=True, exist_ok=True)
-    current = sorted(PARTS.glob(ZIP_NAME + ".*"))
-    if current and min(path.stat().st_mtime for path in current) >= ZIP_PATH.stat().st_mtime:
-        return current
-    for path in current:
-        path.unlink()
-    subprocess.run(
-        ["split", "-b", "500M", "-d", "-a", "2", str(ZIP_PATH), str(PARTS / (ZIP_NAME + "."))],
-        check=True,
-    )
-    parts = sorted(PARTS.glob(ZIP_NAME + ".*"))
-    if not parts:
-        sys.exit("split produced no parts")
-    print(
-        f"parts {len(parts)} " + " ".join(f"{path.name}:{path.stat().st_size}" for path in parts),
-        flush=True,
-    )
-    return parts
+def record_files() -> list[Path]:
+    specs = sorted((TREE / "specifications").glob("*.json"))
+    if len(specs) != 6:
+        sys.exit(f"expected 6 specification files, found {len(specs)}")
+    methodology = TREE / "processing_methodology.pdf"
+    if not methodology.is_file():
+        sys.exit(f"missing {methodology}")
+    return [
+        *session_archives(),
+        methodology,
+        *specs,
+        REPO / "README.md",
+        REPO / "catalog.csv",
+        REPO / "channel_audit.csv",
+    ]
 
 
 def md5(path: Path) -> str:
@@ -321,8 +326,8 @@ def upload_draft() -> None:
             "version": "0.2",
             "language": "eng",
             "notes": (
-                "Join indoor_multirotor_acoustic_collection_v0.2.zip.00 through .05, "
-                "in order, into indoor_multirotor_acoustic_collection_v0.2.zip before unzipping."
+                "Each session is a separate zip named with its session id. "
+                "Unzip that file directly."
             ),
         }
     }
@@ -336,12 +341,7 @@ def upload_draft() -> None:
     if updated.status_code != 200:
         sys.exit(f"metadata update failed: HTTP {updated.status_code} {updated.text[:400]}")
 
-    uploads = [
-        *zip_parts(),
-        REPO / "README.md",
-        REPO / "catalog.csv",
-        REPO / "channel_audit.csv",
-    ]
+    uploads = record_files()
     file_records = []
     for path in uploads:
         local = md5(path)
@@ -379,6 +379,16 @@ def upload_draft() -> None:
             {"name": path.name, "size": path.stat().st_size, "checksum": remote}
         )
 
+    for name in OBSOLETE:
+        removed = session.delete(
+            f"{bucket}/{quote(name)}",
+            headers={"Authorization": headers["Authorization"]},
+            timeout=120,
+        )
+        if removed.status_code not in (204, 404):
+            sys.exit(f"delete {name} failed: HTTP {removed.status_code}")
+        print(f"removed {name} HTTP {removed.status_code}", flush=True)
+
     final = zenodo_request(session, "GET", f"{ZENODO}/{dep_id}", headers=headers)
     final.raise_for_status()
     record = final.json()
@@ -402,10 +412,8 @@ def main() -> None:
     if action in ("all", "fetch"):
         fetch_tree()
     if action in ("all", "zip"):
-        build_zip()
+        session_archives()
     if action in ("all", "upload"):
-        if not ZIP_PATH.is_file():
-            sys.exit(f"missing {ZIP_PATH}")
         upload_draft()
 
 
