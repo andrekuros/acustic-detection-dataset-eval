@@ -12,7 +12,7 @@ Author line, used here as a placeholder: CONCEPTIO Laboratory, Instituto Tecnol�
 
 1. Confirm the license. The text below marks CC BY 4.0 as the intended license, and it is pending confirmation. This repository does not include a `LICENSE` file, because that file would assert a license the authors have not confirmed. Zenodo fills an empty license with CC0. That default is not a confirmed choice. Change the license field before publishing.
 2. Replace the author placeholder with the author list the laboratory wants. Do not invent personal names to fill it.
-3. Decide the unresolved Matrice label. The folder, the file stem, and the sidecar disagree. The identifier `matrice350_trajectory_UNRESOLVED` records the conflict. It does not choose a side.
+3. The archive name for that take is `matrice350`, following the directory and the file stem. The sidecar still says `DJI Flip`. That string stays in `catalog.csv`.
 
 The source share is 6,004,947,774 bytes (6.00 GB). The filtered package below is 2,654,584,283 bytes of audio, the processing note, and the manufacturer sheets, plus this README, `catalog.csv`, and `channel_audit.csv`. That is under the Zenodo 50 GB limit.
 
@@ -30,7 +30,7 @@ Included, for every take:
 | `sessions/<id>/synchronized_array.wav` | `Sincronizados/respe_<stem>.wav` |
 | `sessions/<id>/sidecar.json` | the raw sidecar; the other two copies are identical |
 
-`<id>` is the canonical session id. `catalog.csv` column `archive_dir` is `sessions/<id>`. `relative_path` remains the original share path. On the unresolved take, the raw array and its sidecar in `Brutos` are named `Respe_` with a capital R. The synchronized copies of those two files use `respe_`.
+`<id>` is the session id in `catalog.csv`. `archive_dir` is the directory inside the zip. The 2 m, 5 m, and 10 m takes of one aircraft share one zip. `relative_path` remains the original share path. On the Matrice take, the raw array and its sidecar in `Brutos` are named `Respe_` with a capital R. The synchronized copies of those two files use `respe_`.
 
 Also included: `processing_methodology.pdf` (the source file `METODOLOGIA_PROCESSAMENTO.pdf`) and the manufacturer JSON sheets, renamed under `specifications/`. The Mini 4 Pro sheet in the no-guard folder is byte-identical to `specifications/dji_mini_4_pro.json`, so it is not repeated. The JSON keys inside those sheets are still the Portuguese field names from the source. They are copied manufacturer data, not campaign measurements.
 
@@ -42,7 +42,7 @@ Left out:
 
 `catalog.csv` still records the slice and PNG counts of the source share. `channel_audit.csv` is a check of the raw array files. Neither file is a detector evaluation.
 
-Zenodo does not store folders. Each session is therefore its own zip, `<id>.zip`, and that zip opens directly. Inside, the directory `<id>/` holds the five files above. `catalog.csv` column `archive_dir` is that directory. The processing note, the manufacturer JSON files, this README, the catalog, and the channel audit are separate files on the record.
+Zenodo does not store folders, so each aircraft distance series is one zip: `flip.zip`, `neo2.zip`, and `mini4pro.zip`. Inside, `2m/`, `5m/`, and `10m/` each hold the five files above. Free flights and `matrice350.zip` are separate zips with the same five files. The processing note, the manufacturer JSON files, this README, the catalog, and the channel audit are separate files on the record.
 
 `scripts/build_and_upload_zenodo.py` builds that package from the share and uploads the draft. The script does not publish the record.
 
@@ -91,13 +91,13 @@ Distances are sidecar strings only (`2m`, `5m`, `10m`, `LIVRE`). There is no ran
 
 The two multi-aircraft takes have no time marks that assign a segment to one airframe.
 
-`matrice350_trajectory_UNRESOLVED`: folder `DJI_MATRICE_350/10m, 5m e 2m` and file stem `DJI_MATRICE_10M_5M_2M`. The sidecar says `"drone": "DJI Flip"`, `"distancia": "10m, 5m e 2m"`, timestamp `2026-09-16 13:05:40`. The distance string matches the folder name and is not a single measured range. Do not choose the aircraft. The share copies of this take were replaced on 5 October 2026, and the durations below measure those copies. The raw reference is 622.38 s, and the mid-file level is −32.68 dBFS. The manufacturer sheet next to that folder names a DJI Matrice 350 RTK and does not resolve the sidecar.
+`matrice350`: folder `DJI_MATRICE_350/10m, 5m e 2m` and file stem `DJI_MATRICE_10M_5M_2M`. The archive uses that Matrice name. The sidecar still says `"drone": "DJI Flip"`, `"distancia": "10m, 5m e 2m"`, timestamp `2026-09-16 13:05:40`. The distance string is the whole trajectory, not one measured range. The raw reference is 622.38 s, and the mid-file level is −32.68 dBFS. The manufacturer sheet names a DJI Matrice 350 RTK.
 
-Canonical ids: `flip_{2,5,10}m`, `neo2_{2,5,10}m`, `mini4pro_{2,5,10}m`, `mini4pro_noguard_free`, `multi_neo2_mini4pro_free`, `multi_flip_neo2_mini4pro_matrice_free`, `matrice350_trajectory_UNRESOLVED`.
+Canonical ids: `flip_{2,5,10}m`, `neo2_{2,5,10}m`, `mini4pro_{2,5,10}m`, `mini4pro_noguard_free`, `multi_neo2_mini4pro_free`, `multi_flip_neo2_mini4pro_matrice_free`, `matrice350`.
 
 ## Synchronization and slices
 
-Four synchronized pairs differ by at least 1 s: `flip_5m` +1.79 s, `neo2_5m` −4.46 s, `mini4pro_5m` +10.56 s, `mini4pro_noguard_free` +1.31 s. `matrice350_trajectory_UNRESOLVED` differs by −0.13 s. The other eight are within 0.12 s. Slice indexes are not a shared time base on the four mismatched takes. `neo2_2m` differs by 0.03 s, but the floors still differ (179 reference slices and 180 array slices) because the containers fall on opposite sides of an integer second. The unresolved take does the same (608 reference slices and 609 array slices).
+Four synchronized pairs differ by at least 1 s: `flip_5m` +1.79 s, `neo2_5m` −4.46 s, `mini4pro_5m` +10.56 s, `mini4pro_noguard_free` +1.31 s. `matrice350` differs by −0.13 s. The other eight are within 0.12 s. Slice indexes are not a shared time base on the four mismatched takes. `neo2_2m` differs by 0.03 s, but the floors still differ (179 reference slices and 180 array slices) because the containers fall on opposite sides of an integer second. `matrice350` does the same (608 reference slices and 609 array slices).
 
 ## Channel audit
 
@@ -120,11 +120,11 @@ Varying channels:
 - `mini4pro_10m`: 1–5
 - `mini4pro_noguard_free`: 7 only (the six-channel export omits it)
 - both multi-aircraft takes: 1–5
-- unresolved Matrice folder: 1, 5, 6, 7, 8
+- `matrice350`: 1, 5, 6, 7, 8
 
-On that unresolved take, channel 2 is `mixed`: every window is signal, the span is 0.83 dB, and the loudest window is −60.89 dBFS. Channels 3 and 4 are `near_silent`. Their loudest windows are −83.08 dBFS and −86.88 dBFS. Channels 7 and 8 vary, and the six-channel export omits them. Channels 3 and 4 are still exported.
+On `matrice350`, channel 2 is `mixed`: every window is signal, the span is 0.83 dB, and the loudest window is −60.89 dBFS. Channels 3 and 4 are `near_silent`. Their loudest windows are −83.08 dBFS and −86.88 dBFS. Channels 7 and 8 vary, and the six-channel export omits them. Channels 3 and 4 are still exported.
 
-On the twelve May takes, middle windows of varying channels lie between −55.67 and −47.01 dBFS. Start windows of those channels lie between −67.83 and −60.39 dBFS. End windows span −62.38 to −34.16 dBFS, so level is not monotonic. On the unresolved take, middle windows of the varying channels lie between −39.18 and −38.11 dBFS. Do not interpret level changes as a flight profile. There is no trajectory log.
+On the twelve May takes, middle windows of varying channels lie between −55.67 and −47.01 dBFS. Start windows of those channels lie between −67.83 and −60.39 dBFS. End windows span −62.38 to −34.16 dBFS, so level is not monotonic. On `matrice350`, middle windows of the varying channels lie between −39.18 and −38.11 dBFS. Do not interpret level changes as a flight profile. There is no trajectory log.
 
 ## Processing note
 
@@ -166,8 +166,39 @@ Description:
 
 ```html
 <p>Indoor acoustic recordings of multirotor aircraft collected at the CONCEPTIO laboratory, Instituto Tecnológico de Aeronáutica, São José dos Campos (DataSet_Arena_Indoor_v0.2_Extended_Time).</p>
-<p>Thirteen takes were recorded with a mono Behringer reference channel (44.1 kHz, IEEE float32) and an eight-channel ReSpeaker array (16 kHz, 16-bit PCM). Microphone models are not named. The array is described as a six-microphone circular array; channels 7 and 8 remain in the eight-channel files. Raw reference audio totals 3165.70 s. Each condition is a single take.</p>
-<p>The conditions are DJI Flip, DJI Neo 2, and DJI Mini 4 Pro at labeled distances of 2 m, 5 m, and 10 m; one Mini 4 Pro free flight without a propeller guard; one free flight of Neo 2 and Mini 4 Pro; and one free flight of Flip, Neo 2, Mini 4 Pro, and a Matrice. Distances are sidecar labels. No range or trajectory log is included.</p>
-<p>Each session is a separate zip named with its session id, such as flip_2m.zip. The zip contains that directory with raw_reference.wav, raw_array.wav, synchronized_reference.wav, synchronized_array.wav, and sidecar.json. catalog.csv lists the sessions and durations. processing_methodology.pdf is the processing note, and the specification JSON files are copied manufacturer sheets.</p>
-<p>In matrice350_trajectory_UNRESOLVED the directory names a Matrice trajectory and the sidecar names DJI Flip. Neo sidecars say DJI Neo 2; the manufacturer sheet describes DJI Neo. Four synchronized pairs differ by at least 1 s: flip_5m, neo2_5m, mini4pro_5m, and mini4pro_noguard_free.</p>
+<p>Thirteen takes were recorded with a mono Behringer reference channel (44.1 kHz, IEEE float32) and an eight-channel ReSpeaker array (16 kHz, 16-bit PCM). Microphone models are not named. The array is described as a six-microphone circular array; channels 7 and 8 remain in the eight-channel files. Raw reference audio totals 3165.70 s. Each condition is a single take. Distances are sidecar labels. No range or trajectory log is included.</p>
+<pre>
+flip.zip
+└── flip/
+    ├── 2m/
+    │   ├── raw_reference.wav            Behringer, mono, 44.1 kHz, float32
+    │   ├── raw_array.wav                ReSpeaker, 8 channels, 16 kHz, 16-bit
+    │   ├── synchronized_reference.wav
+    │   ├── synchronized_array.wav
+    │   └── sidecar.json                 aircraft, distance, timestamp, gains
+    ├── 5m/                              same five files
+    └── 10m/                             same five files
+neo2.zip
+└── neo2/{2m,5m,10m}/                    same five files
+mini4pro.zip
+└── mini4pro/{2m,5m,10m}/                same five files
+mini4pro_noguard_free.zip
+└── mini4pro_noguard_free/               same five files
+multi_neo2_mini4pro_free.zip
+└── multi_neo2_mini4pro_free/            same five files
+multi_flip_neo2_mini4pro_matrice_free.zip
+└── multi_flip_neo2_mini4pro_matrice_free/
+matrice350.zip
+└── matrice350/                          same five files; one trajectory labeled 10 m, 5 m, and 2 m
+catalog.csv                              session table
+channel_audit.csv                        array-channel levels
+processing_methodology.pdf               processing note
+dji_flip.json                            manufacturer sheet
+dji_neo.json
+dji_mini_4_pro.json
+dji_matrice_350_rtk.json
+dji_neo_and_mini_4_pro.json
+dji_flip_neo_mini_4_pro_and_matrice_350.json
+</pre>
+<p>The matrice350 sidecar records the aircraft string DJI Flip. Neo sidecars say DJI Neo 2; the manufacturer sheet describes DJI Neo. Synchronized file lengths differ by at least 1 s for flip/5m, neo2/5m, mini4pro/5m, and mini4pro_noguard_free.</p>
 ```

@@ -30,7 +30,16 @@ TREE = WORK / "tree"
 SESSION_ZIPS = WORK / "session-zips"
 DRAFT_PATH = WORK / "draft.json"
 OBSOLETE = [
-    f"indoor_multirotor_acoustic_collection_v0.2.zip.{index:02d}" for index in range(6)
+    "flip_2m.zip",
+    "flip_5m.zip",
+    "flip_10m.zip",
+    "neo2_2m.zip",
+    "neo2_5m.zip",
+    "neo2_10m.zip",
+    "mini4pro_2m.zip",
+    "mini4pro_5m.zip",
+    "mini4pro_10m.zip",
+    "matrice350_trajectory_UNRESOLVED.zip",
 ]
 DAV = {"d": "DAV:"}
 
@@ -44,10 +53,41 @@ TITLE = (
     "(DataSet_Arena_Indoor_v0.2_Extended_Time)"
 )
 DESCRIPTION = """<p>Indoor acoustic recordings of multirotor aircraft collected at the CONCEPTIO laboratory, Instituto Tecnológico de Aeronáutica, São José dos Campos (DataSet_Arena_Indoor_v0.2_Extended_Time).</p>
-<p>Thirteen takes were recorded with a mono Behringer reference channel (44.1 kHz, IEEE float32) and an eight-channel ReSpeaker array (16 kHz, 16-bit PCM). Microphone models are not named. The array is described as a six-microphone circular array; channels 7 and 8 remain in the eight-channel files. Raw reference audio totals 3165.70 s. Each condition is a single take.</p>
-<p>The conditions are DJI Flip, DJI Neo 2, and DJI Mini 4 Pro at labeled distances of 2 m, 5 m, and 10 m; one Mini 4 Pro free flight without a propeller guard; one free flight of Neo 2 and Mini 4 Pro; and one free flight of Flip, Neo 2, Mini 4 Pro, and a Matrice. Distances are sidecar labels. No range or trajectory log is included.</p>
-<p>Each session is a separate zip named with its session id, such as flip_2m.zip. The zip contains that directory with raw_reference.wav, raw_array.wav, synchronized_reference.wav, synchronized_array.wav, and sidecar.json. catalog.csv lists the sessions and durations. processing_methodology.pdf is the processing note, and the specification JSON files are copied manufacturer sheets.</p>
-<p>In matrice350_trajectory_UNRESOLVED the directory names a Matrice trajectory and the sidecar names DJI Flip. Neo sidecars say DJI Neo 2; the manufacturer sheet describes DJI Neo. Four synchronized pairs differ by at least 1 s: flip_5m, neo2_5m, mini4pro_5m, and mini4pro_noguard_free.</p>"""
+<p>Thirteen takes were recorded with a mono Behringer reference channel (44.1 kHz, IEEE float32) and an eight-channel ReSpeaker array (16 kHz, 16-bit PCM). Microphone models are not named. The array is described as a six-microphone circular array; channels 7 and 8 remain in the eight-channel files. Raw reference audio totals 3165.70 s. Each condition is a single take. Distances are sidecar labels. No range or trajectory log is included.</p>
+<pre>
+flip.zip
+└── flip/
+    ├── 2m/
+    │   ├── raw_reference.wav            Behringer, mono, 44.1 kHz, float32
+    │   ├── raw_array.wav                ReSpeaker, 8 channels, 16 kHz, 16-bit
+    │   ├── synchronized_reference.wav
+    │   ├── synchronized_array.wav
+    │   └── sidecar.json                 aircraft, distance, timestamp, gains
+    ├── 5m/                              same five files
+    └── 10m/                             same five files
+neo2.zip
+└── neo2/{2m,5m,10m}/                    same five files
+mini4pro.zip
+└── mini4pro/{2m,5m,10m}/                same five files
+mini4pro_noguard_free.zip
+└── mini4pro_noguard_free/               same five files
+multi_neo2_mini4pro_free.zip
+└── multi_neo2_mini4pro_free/            same five files
+multi_flip_neo2_mini4pro_matrice_free.zip
+└── multi_flip_neo2_mini4pro_matrice_free/
+matrice350.zip
+└── matrice350/                          same five files; one trajectory labeled 10 m, 5 m, and 2 m
+catalog.csv                              session table
+channel_audit.csv                        array-channel levels
+processing_methodology.pdf               processing note
+dji_flip.json                            manufacturer sheet
+dji_neo.json
+dji_mini_4_pro.json
+dji_matrice_350_rtk.json
+dji_neo_and_mini_4_pro.json
+dji_flip_neo_mini_4_pro_and_matrice_350.json
+</pre>
+<p>The matrice350 sidecar records the aircraft string DJI Flip. Neo sidecars say DJI Neo 2; the manufacturer sheet describes DJI Neo. Synchronized file lengths differ by at least 1 s for flip/5m, neo2/5m, mini4pro/5m, and mini4pro_noguard_free.</p>"""
 
 SPECS = [
     (
@@ -176,7 +216,7 @@ def package_files(session: requests.Session, rows: list[dict[str, str]]) -> list
     for row in rows:
         rel = row["relative_path"]
         stem = row["file_stem"]
-        archive = row["archive_dir"]
+        archive = f"sessions/{row['session_id']}"
         raw = list_files(session, f"{rel}/Brutos")
         synced = list_files(session, f"{rel}/Sincronizados")
         chosen = [
@@ -213,19 +253,26 @@ def fetch_tree() -> None:
 def session_archives() -> list[Path]:
     SESSION_ZIPS.mkdir(parents=True, exist_ok=True)
     rows = list(csv.DictReader((REPO / "catalog.csv").open(newline="")))
-    archives: list[Path] = []
+    groups: dict[str, list[dict[str, str]]] = {}
     for row in rows:
-        session_id = row["session_id"]
-        source = TREE / "sessions" / session_id
-        files = sorted(path for path in source.iterdir() if path.is_file())
-        if len(files) != 5:
-            sys.exit(f"{session_id}: expected 5 files, found {[path.name for path in files]}")
-        dest = SESSION_ZIPS / f"{session_id}.zip"
-        newest = max(path.stat().st_mtime for path in files)
+        zip_name = f"{row['archive_dir'].split('/')[0]}.zip"
+        groups.setdefault(zip_name, []).append(row)
+    archives: list[Path] = []
+    for zip_name, members in groups.items():
+        packed: list[tuple[str, list[Path]]] = []
+        for row in members:
+            source = TREE / "sessions" / row["session_id"]
+            files = sorted(path for path in source.iterdir() if path.is_file())
+            if len(files) != 5:
+                sys.exit(f"{row['session_id']}: expected 5 files, found {[path.name for path in files]}")
+            packed.append((row["archive_dir"], files))
+        dest = SESSION_ZIPS / zip_name
+        newest = max(path.stat().st_mtime for _, files in packed for path in files)
         if not dest.is_file() or dest.stat().st_mtime < newest:
             with zipfile.ZipFile(dest, "w", compression=zipfile.ZIP_STORED, allowZip64=True) as archive:
-                for path in files:
-                    archive.write(path, f"{session_id}/{path.name}")
+                for archive_dir, files in packed:
+                    for path in files:
+                        archive.write(path, f"{archive_dir}/{path.name}")
         print(f"zip {dest.name} {dest.stat().st_size}", flush=True)
         archives.append(dest)
     return archives
@@ -326,8 +373,8 @@ def upload_draft() -> None:
             "version": "0.2",
             "language": "eng",
             "notes": (
-                "Each session is a separate zip named with its session id. "
-                "Unzip that file directly."
+                "Distance series are grouped by aircraft in flip.zip, neo2.zip, and mini4pro.zip. "
+                "matrice350.zip is the Matrice 350 trajectory."
             ),
         }
     }
