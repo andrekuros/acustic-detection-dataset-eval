@@ -40,6 +40,12 @@ OBSOLETE = [
     "mini4pro_5m.zip",
     "mini4pro_10m.zip",
     "matrice350_trajectory_UNRESOLVED.zip",
+    "dji_flip.json",
+    "dji_neo.json",
+    "dji_mini_4_pro.json",
+    "dji_matrice_350_rtk.json",
+    "dji_neo_and_mini_4_pro.json",
+    "dji_flip_neo_mini_4_pro_and_matrice_350.json",
 ]
 DAV = {"d": "DAV:"}
 
@@ -56,20 +62,20 @@ TITLE = (
 DESCRIPTION = """<h2>Overview</h2>
 <p>This dataset is for acoustic drone detection and classification. It provides indoor multirotor recordings so that a mono reference microphone and an eight-channel array can be compared on the same take. The collection is DataSet_Arena_Indoor_v0.2_Extended_Time, recorded at the CONCEPTIO Laboratory, Instituto Tecnológico de Aeronáutica, São José dos Campos. Thirteen takes cover DJI Flip, DJI Neo 2, DJI Mini 4 Pro, and DJI Matrice 350, including free flights and two multi-aircraft takes. Raw reference audio totals 3165.70 s. Each condition is one take. The record does not include a detector score or a trained model.</p>
 <h2>Files</h2>
-<p>Audio is one zip per aircraft or flight, a few hundred megabytes each. Download the zip for the aircraft you need. <code>catalog.csv</code> is the index of every take.</p>
+<p>Audio is one zip per aircraft or flight, a few hundred megabytes each. Download the zip for the aircraft you need. File names and JSON fields in the package are English. <code>catalog.csv</code> is the index of every take.</p>
 <ul>
 <li><strong>flip.zip</strong>, <strong>neo2.zip</strong>, <strong>mini4pro.zip</strong> — DJI Flip, DJI Neo 2, and DJI Mini 4 Pro at the sidecar distances 2 m, 5 m, and 10 m. Each distance is its own folder.</li>
 <li><strong>mini4pro_noguard_free.zip</strong> — one Mini 4 Pro free flight with the propeller guard removed.</li>
 <li><strong>multi_neo2_mini4pro_free.zip</strong> — one free flight with Neo 2 and Mini 4 Pro together.</li>
 <li><strong>multi_flip_neo2_mini4pro_matrice_free.zip</strong> — one free flight with Flip, Neo 2, Mini 4 Pro, and Matrice together.</li>
-<li><strong>matrice350.zip</strong> — one DJI Matrice 350 pass. The sidecar distance is the whole string "10m, 5m e 2m", one trajectory.</li>
+<li><strong>matrice350.zip</strong> — one DJI Matrice 350 pass. The sidecar distance is the whole string "10m, 5m and 2m", one trajectory.</li>
 <li><strong>catalog.csv</strong> — one row per take: folder inside the zip, durations, sidecar text, and the slice counts of the source share.</li>
 <li><strong>channel_audit.csv</strong> — level of each array channel at the start, middle, and end of the raw array file.</li>
 <li><strong>processing_methodology.pdf</strong> — the two-page processing note from the collection.</li>
-<li><strong>dji_flip.json</strong>, <strong>dji_neo.json</strong>, <strong>dji_mini_4_pro.json</strong>, <strong>dji_matrice_350_rtk.json</strong>, <strong>dji_neo_and_mini_4_pro.json</strong>, <strong>dji_flip_neo_mini_4_pro_and_matrice_350.json</strong> — manufacturer sheets. The keys are the Portuguese field names from the source. These sheets are copied manufacturer data.</li>
+<li><strong>aircraft_specifications.json</strong> — one English file with the manufacturer sheets for Flip, Neo, Mini 4 Pro, and Matrice 350 RTK. Copied manufacturer data, not campaign measurements.</li>
 </ul>
 <h2>Recording</h2>
-<p>Each take has a mono Behringer reference (44.1 kHz, IEEE float32) and an eight-channel ReSpeaker array (16 kHz, 16-bit PCM). Microphone model names are absent from the collection. The processing note calls the array a six-microphone circular array. Channels 7 and 8 stay in the eight-channel files. Distances are the strings in the sidecar: 2m, 5m, 10m, and LIVRE. LIVRE means free flight. The collection has no range log and no trajectory log.</p>
+<p>Each take has a mono Behringer reference (44.1 kHz, IEEE float32) and an eight-channel ReSpeaker array (16 kHz, 16-bit PCM). Microphone model names are absent from the collection. The processing note calls the array a six-microphone circular array. Channels 7 and 8 stay in the eight-channel files. Distances are the strings in the sidecar: 2m, 5m, 10m, and free. The collection has no range log and no trajectory log.</p>
 <h2>Inside a zip</h2>
 <p>Every take folder holds the same five files. In flip.zip the 2 m take looks like this. The 5 m and 10 m folders, and the folders in the other zips, use the same five names.</p>
 <pre>flip/2m/
@@ -78,15 +84,14 @@ DESCRIPTION = """<h2>Overview</h2>
 ├── synchronized_reference.wav
 ├── synchronized_array.wav
 └── sidecar.json                aircraft, distance, timestamp, gains</pre>
-<p>The WAV bytes are stored uncompressed. <code>archive_dir</code> in catalog.csv is that folder.</p>
+<p>The WAV bytes are stored uncompressed. <code>archive_dir</code> in catalog.csv is that folder. Each sidecar uses English keys: timestamp, aircraft, distance, gains.</p>
 <h2>Reading a take</h2>
 <p><code>session_id</code> names the take. <code>raw_reference_s</code>, <code>raw_array_s</code>, <code>sync_reference_s</code>, and <code>sync_array_s</code> are container durations in seconds. <code>sync_duration_delta_s</code> is the synchronized reference duration minus the synchronized array duration. <code>reference_mid_rms_dbfs</code> is a 2.0 s window at the middle of the raw reference, in dBFS with full scale equal to 1.</p>
 <p><code>channel_audit.csv</code> has one row per take, channel (1–8), and window (start, mid, end). <code>channel_class</code> is varying, flat, near_silent, digital_zero, idle, stuck_constant, or mixed. A channel is varying when all three windows are signal, the loudest window is above −80 dBFS, and the three windows span at least 3 dB.</p>
 <h2>Limitations</h2>
 <ul>
-<li>The matrice350 sidecar still records the aircraft string DJI Flip. The archive name follows the folder and the file stem.</li>
-<li>Neo sidecars say DJI Neo 2. The sheet dji_neo.json describes DJI Neo (about 135 g).</li>
-<li>Flip sidecars say DJI FPV Flip. The sheet dji_flip.json names DJI Flip.</li>
+<li>Package sidecars correct labels that were wrong or Portuguese on the source share. The Matrice take source sidecar said DJI Flip; the package sidecar says DJI Matrice 350. Flip source sidecars said DJI FPV Flip; the package says DJI Flip. Source distance LIVRE is free in the package. The Matrice source distance "10m, 5m e 2m" is "10m, 5m and 2m".</li>
+<li>Neo session folders on the source share held a manufacturer sheet for DJI Neo (about 135 g), not Neo 2. That sheet is the dji_neo block in aircraft_specifications.json.</li>
 <li>Four synchronized pairs differ by at least 1 s: flip/5m (+1.79 s), neo2/5m (−4.46 s), mini4pro/5m (+10.56 s), and mini4pro_noguard_free (+1.31 s). matrice350 differs by −0.13 s. The other eight are within 0.12 s.</li>
 <li>mini4pro_noguard_free has no matched free flight with the guard on, so the missing guard is mixed with the flight pattern.</li>
 <li>The two multi-aircraft takes have no time marks that assign a segment to one airframe.</li>
@@ -94,32 +99,32 @@ DESCRIPTION = """<h2>Overview</h2>
 <li>The processing note used a 3 kHz high-pass only to find a metallic calibration strike. The note does not say the stored WAV samples were filtered, and it does not give room size, microphone coordinates, filter order, FFT length, or hop.</li>
 </ul>"""
 
-SPECS = [
-    (
-        "DJI_FPV_FLIP/especificacoes_oficiais_fabricante.json",
-        "specifications/dji_flip.json",
+# Manufacturer sheets live in aircraft_specifications.json in the repository.
+
+# Corrected English sidecar content written into each take folder.
+ENGLISH_SIDECARS = {
+    "flip_2m": ("2026-05-22 09:01:24.453156", "DJI Flip", "2m"),
+    "flip_5m": ("2026-05-22 09:08:08.200775", "DJI Flip", "5m"),
+    "flip_10m": ("2026-05-22 09:14:39.100076", "DJI Flip", "10m"),
+    "neo2_2m": ("2026-05-22 09:47:58.841664", "DJI Neo 2", "2m"),
+    "neo2_5m": ("2026-05-22 09:52:58.634050", "DJI Neo 2", "5m"),
+    "neo2_10m": ("2026-05-22 09:58:33.579961", "DJI Neo 2", "10m"),
+    "mini4pro_2m": ("2026-05-22 09:22:13.073119", "DJI Mini 4 Pro", "2m"),
+    "mini4pro_5m": ("2026-05-22 09:26:14.535361", "DJI Mini 4 Pro", "5m"),
+    "mini4pro_10m": ("2026-05-22 09:32:49.174844", "DJI Mini 4 Pro", "10m"),
+    "mini4pro_noguard_free": ("2026-05-22 10:36:30.664300", "DJI Mini 4 Pro", "free"),
+    "multi_neo2_mini4pro_free": (
+        "2026-05-22 10:30:11.530212",
+        "DJI Neo 2 + DJI Mini 4 Pro",
+        "free",
     ),
-    (
-        "DJI_NEO_2/especificacoes_oficiais_fabricante.json",
-        "specifications/dji_neo.json",
+    "multi_flip_neo2_mini4pro_matrice_free": (
+        "2026-05-22 10:18:42.274861",
+        "DJI Flip + DJI Neo 2 + DJI Mini 4 Pro + DJI Matrice 350",
+        "free",
     ),
-    (
-        "DJI_MINI_4_PRO/especificacoes_oficiais_fabricante.json",
-        "specifications/dji_mini_4_pro.json",
-    ),
-    (
-        "DJI_MATRICE_350/especificacoes_oficiais_fabricante.json",
-        "specifications/dji_matrice_350_rtk.json",
-    ),
-    (
-        "DJI_NEO_2_E_DJI_MINI_4_PRO/especificacoes_oficiais_fabricante.json",
-        "specifications/dji_neo_and_mini_4_pro.json",
-    ),
-    (
-        "DJI_FLIP_NEO_MINI_MATRICE/especificacoes_oficiais_fabricante.json",
-        "specifications/dji_flip_neo_mini_4_pro_and_matrice_350.json",
-    ),
-]
+    "matrice350": ("2026-09-16 13:05:40.727258", "DJI Matrice 350", "10m, 5m and 2m"),
+}
 
 
 def token() -> str:
@@ -234,11 +239,27 @@ def package_files(session: requests.Session, rows: list[dict[str, str]]) -> list
         for (name, size, source), target in chosen:
             print(f"map {name} -> {target} ({size} bytes)", flush=True)
             files.append((source, target, size))
-    for source, target in [("METODOLOGIA_PROCESSAMENTO.pdf", "processing_methodology.pdf"), *SPECS]:
+    for source, target in [("METODOLOGIA_PROCESSAMENTO.pdf", "processing_methodology.pdf")]:
         info = session.head(webdav_url(source), timeout=60)
         info.raise_for_status()
         files.append((source, target, int(info.headers["Content-Length"])))
     return files
+
+
+def write_english_sidecars() -> None:
+    gains = [1.0] * 8
+    for session_id, (timestamp, aircraft, distance) in ENGLISH_SIDECARS.items():
+        path = TREE / "sessions" / session_id / "sidecar.json"
+        if not path.parent.is_dir():
+            sys.exit(f"missing session folder for {session_id}")
+        body = {
+            "timestamp": timestamp,
+            "aircraft": aircraft,
+            "distance": distance,
+            "gains": gains,
+        }
+        path.write_text(json.dumps(body, indent=2) + "\n")
+        print(f"wrote English sidecar {session_id}", flush=True)
 
 
 def fetch_tree() -> None:
@@ -249,7 +270,8 @@ def fetch_tree() -> None:
     session.auth = (WEBDAV_USER, "")
     for source, archive, size in package_files(session, rows):
         download(session, source, TREE / archive, size)
-    for name in ("README.md", "catalog.csv", "channel_audit.csv"):
+    write_english_sidecars()
+    for name in ("README.md", "catalog.csv", "channel_audit.csv", "aircraft_specifications.json"):
         target = TREE / name
         target.write_bytes((REPO / name).read_bytes())
         print(f"copied {name}", flush=True)
@@ -284,16 +306,17 @@ def session_archives() -> list[Path]:
 
 
 def record_files() -> list[Path]:
-    specs = sorted((TREE / "specifications").glob("*.json"))
-    if len(specs) != 6:
-        sys.exit(f"expected 6 specification files, found {len(specs)}")
+    write_english_sidecars()
+    specs = REPO / "aircraft_specifications.json"
+    if not specs.is_file():
+        sys.exit(f"missing {specs}")
     methodology = TREE / "processing_methodology.pdf"
     if not methodology.is_file():
         sys.exit(f"missing {methodology}")
     return [
         *session_archives(),
         methodology,
-        *specs,
+        specs,
         REPO / "README.md",
         REPO / "catalog.csv",
         REPO / "channel_audit.csv",
@@ -464,7 +487,8 @@ def metadata_body() -> dict:
             "language": "eng",
             "notes": (
                 "One zip per aircraft or flight. catalog.csv is the index. "
-                "matrice350.zip is the Matrice 350 trajectory; its sidecar still says DJI Flip."
+                "Package sidecars and aircraft_specifications.json are English. "
+                "matrice350.zip is the Matrice 350 trajectory."
             ),
         }
     }

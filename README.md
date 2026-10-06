@@ -12,9 +12,9 @@ Author line, used here as a placeholder: CONCEPTIO Laboratory, Instituto Tecnol�
 
 1. Confirm the license. The text below marks CC BY 4.0 as the intended license, and it is pending confirmation. This repository does not include a `LICENSE` file, because that file would assert a license the authors have not confirmed. Zenodo fills an empty license with CC0. That default is not a confirmed choice. Change the license field before publishing.
 2. Replace the author placeholder with the author list the laboratory wants. Do not invent personal names to fill it.
-3. The archive name for that take is `matrice350`, following the directory and the file stem. The sidecar still says `DJI Flip`. That string stays in `catalog.csv`.
+3. Confirm that the English package sidecars and `aircraft_specifications.json` match what the laboratory wants to publish.
 
-The source share is 6,004,947,774 bytes (6.00 GB). The filtered package below is 2,654,584,283 bytes of audio, the processing note, and the manufacturer sheets, plus this README, `catalog.csv`, and `channel_audit.csv`. That is under the Zenodo 50 GB limit.
+The source share is 6,004,947,774 bytes (6.00 GB). The filtered package below is 2,654,584,283 bytes of audio, the processing note, and the manufacturer sheet, plus this README, `catalog.csv`, and `channel_audit.csv`. That is under the Zenodo 50 GB limit.
 
 ## What is in the Zenodo package
 
@@ -28,21 +28,22 @@ Included, for every take:
 | `raw_array.wav` | `Brutos/respe_<stem>.wav` |
 | `synchronized_reference.wav` | `Sincronizados/<stem>.wav` |
 | `synchronized_array.wav` | `Sincronizados/respe_<stem>.wav` |
-| `sidecar.json` | the raw sidecar; the other two copies are identical |
+| `sidecar.json` | English keys and corrected aircraft/distance labels (source used Portuguese keys) |
 
 `archive_dir` in `catalog.csv` is that folder. The zip name is the aircraft or flight: `flip.zip`, `neo2.zip`, and `mini4pro.zip` each hold the 2 m, 5 m, and 10 m folders. The four other flights are one folder each. `relative_path` remains the original share path. On the Matrice take, the raw array and its sidecar in `Brutos` are named `Respe_` with a capital R. The synchronized copies of those two files use `respe_`.
 
-Also included: `processing_methodology.pdf` (the source file `METODOLOGIA_PROCESSAMENTO.pdf`) and the manufacturer JSON sheets, renamed under `specifications/`. The Mini 4 Pro sheet in the no-guard folder is byte-identical to `specifications/dji_mini_4_pro.json`, so it is not repeated. The JSON keys inside those sheets are still the Portuguese field names from the source. They are copied manufacturer data, not campaign measurements.
+Also included: `processing_methodology.pdf` (the source file `METODOLOGIA_PROCESSAMENTO.pdf`) and one English manufacturer file, `aircraft_specifications.json`, merging Flip, Neo, Mini 4 Pro, and Matrice 350 RTK. Those figures are copied manufacturer data, not campaign measurements. The Neo block describes DJI Neo (about 135 g), not Neo 2.
 
 Left out:
 
 - One-second slice WAVs. On the takes that were checked, each slice is an exact cut of the synchronized file, and the slice count is the floor of that duration.
 - The six mono channel files. They are a split of channels 1–6 of `synchronized_array.wav`. Channels 7 and 8 remain in that eight-channel file.
 - Spectrogram PNGs. They are pictures rendered from the synchronized audio. The processing note does not give the FFT length, hop, or colormap, so the archive keeps the audio rather than the pictures.
+- The six separate Portuguese manufacturer JSON files from the source folders. Their content is merged into `aircraft_specifications.json`.
 
 `catalog.csv` still records the slice and PNG counts of the source share. `channel_audit.csv` is a check of the raw array files. Neither file is a detector evaluation.
 
-The record keeps one zip per aircraft or flight, so a reader can download a single aircraft. The processing note, the manufacturer JSON files, this README, the catalog, and the channel audit sit beside those zips. `catalog.csv` is the index.
+The record keeps one zip per aircraft or flight, so a reader can download a single aircraft. The processing note, `aircraft_specifications.json`, this README, the catalog, and the channel audit sit beside those zips. `catalog.csv` is the index.
 
 `scripts/build_and_upload_zenodo.py` builds that package from the share and uploads the draft. The script does not publish the record.
 
@@ -79,19 +80,27 @@ Reference mid-file RMS is a 2.0 s window of the raw reference file, starting at 
 
 Measured totals on the source share: raw reference 3165.70 s; raw array 3159.04 s; synchronized reference 2982.16 s; synchronized array 2973.53 s; 2976 reference slices; 2967 array slices; 11886 fragment PNGs; 117 overview PNGs. Session trees hold 18,115 files and 6,004,787,695 bytes. The Zenodo package keeps the raw and synchronized recordings and omits the slices, mono splits, and PNGs.
 
-## Labels that stay as written
+## Labels in the package
 
-Sidecars on the Flip takes say `DJI FPV Flip`. The specification JSON names DJI Flip. The canonical aircraft name is DJI Flip. The sidecar string is kept in `catalog.csv`.
+Package sidecars use English keys: `timestamp`, `aircraft`, `distance`, `gains`. Aircraft and distance strings are corrected where the source was wrong or Portuguese.
 
-Sidecars say `DJI Neo 2`. The specification JSON in `DJI_NEO_2/` describes DJI Neo (about 135 g), not Neo 2. Do not publish those figures as Neo 2 specifications. Specification sheets are copied manufacturer data, not campaign measurements. The same Neo block is copied into the multi-aircraft sheets.
+| Take | Package aircraft | Package distance | Source note |
+| --- | --- | --- | --- |
+| Flip 2/5/10 m | DJI Flip | 2m / 5m / 10m | Source said `DJI FPV Flip` |
+| Neo 2 2/5/10 m | DJI Neo 2 | 2m / 5m / 10m | Manufacturer sheet is DJI Neo (~135 g) |
+| Mini 4 Pro 2/5/10 m | DJI Mini 4 Pro | 2m / 5m / 10m | |
+| mini4pro_noguard_free | DJI Mini 4 Pro | free | Source distance was `LIVRE` |
+| multi_neo2_mini4pro_free | DJI Neo 2 + DJI Mini 4 Pro | free | Source distance was `LIVRE` |
+| multi_flip_neo2_mini4pro_matrice_free | DJI Flip + DJI Neo 2 + DJI Mini 4 Pro + DJI Matrice 350 | free | Source used `DJI FPV Flip` and `LIVRE` |
+| matrice350 | DJI Matrice 350 | 10m, 5m and 2m | Source wrongly said `DJI Flip` and `10m, 5m e 2m` |
 
-Distances are sidecar strings only (`2m`, `5m`, `10m`, `LIVRE`). There is no range log. `LIVRE` means free flight.
+Distances are sidecar strings only. There is no range log. `free` means free flight.
 
 `mini4pro_noguard_free` is a free flight without a propeller guard. There is no matched free flight with the guard, so the guard is confounded with the flight pattern.
 
 The two multi-aircraft takes have no time marks that assign a segment to one airframe.
 
-`matrice350`: folder `DJI_MATRICE_350/10m, 5m e 2m` and file stem `DJI_MATRICE_10M_5M_2M`. The archive uses that Matrice name. The sidecar still says `"drone": "DJI Flip"`, `"distancia": "10m, 5m e 2m"`, timestamp `2026-09-16 13:05:40`. The distance string is the whole trajectory, not one measured range. The raw reference is 622.38 s, and the mid-file level is −32.68 dBFS. The manufacturer sheet names a DJI Matrice 350 RTK.
+`matrice350`: folder `DJI_MATRICE_350/10m, 5m e 2m` and file stem `DJI_MATRICE_10M_5M_2M`. The distance string is the whole trajectory, not one measured range. The raw reference is 622.38 s, and the mid-file level is −32.68 dBFS. The manufacturer sheet names a DJI Matrice 350 RTK.
 
 Canonical ids: `flip_{2,5,10}m`, `neo2_{2,5,10}m`, `mini4pro_{2,5,10}m`, `mini4pro_noguard_free`, `multi_neo2_mini4pro_free`, `multi_flip_neo2_mini4pro_matrice_free`, `matrice350`.
 
@@ -152,7 +161,7 @@ Publication date: the date of the Zenodo upload. Do not backdate it.
 
 Version: `0.2`
 
-Language: `en` (archive paths are English; manufacturer JSON keys stay Portuguese)
+Language: `en` (package paths, sidecars, and `aircraft_specifications.json` are English)
 
 License: leave unset until the authors confirm it. The intended license, pending that confirmation, is Creative Commons Attribution 4.0 International (CC BY 4.0). The deposit API fills an empty license with CC0. Replace that default before publishing.
 
@@ -168,20 +177,20 @@ Description:
 <h2>Overview</h2>
 <p>This dataset is for acoustic drone detection and classification. It provides indoor multirotor recordings so that a mono reference microphone and an eight-channel array can be compared on the same take. The collection is DataSet_Arena_Indoor_v0.2_Extended_Time, recorded at the CONCEPTIO Laboratory, Instituto Tecnológico de Aeronáutica, São José dos Campos. Thirteen takes cover DJI Flip, DJI Neo 2, DJI Mini 4 Pro, and DJI Matrice 350, including free flights and two multi-aircraft takes. Raw reference audio totals 3165.70 s. Each condition is one take. The record does not include a detector score or a trained model.</p>
 <h2>Files</h2>
-<p>Audio is one zip per aircraft or flight, a few hundred megabytes each. Download the zip for the aircraft you need. <code>catalog.csv</code> is the index of every take.</p>
+<p>Audio is one zip per aircraft or flight, a few hundred megabytes each. Download the zip for the aircraft you need. File names and JSON fields in the package are English. <code>catalog.csv</code> is the index of every take.</p>
 <ul>
 <li><strong>flip.zip</strong>, <strong>neo2.zip</strong>, <strong>mini4pro.zip</strong> — DJI Flip, DJI Neo 2, and DJI Mini 4 Pro at the sidecar distances 2 m, 5 m, and 10 m. Each distance is its own folder.</li>
 <li><strong>mini4pro_noguard_free.zip</strong> — one Mini 4 Pro free flight with the propeller guard removed.</li>
 <li><strong>multi_neo2_mini4pro_free.zip</strong> — one free flight with Neo 2 and Mini 4 Pro together.</li>
 <li><strong>multi_flip_neo2_mini4pro_matrice_free.zip</strong> — one free flight with Flip, Neo 2, Mini 4 Pro, and Matrice together.</li>
-<li><strong>matrice350.zip</strong> — one DJI Matrice 350 pass. The sidecar distance is the whole string "10m, 5m e 2m", one trajectory.</li>
+<li><strong>matrice350.zip</strong> — one DJI Matrice 350 pass. The sidecar distance is the whole string "10m, 5m and 2m", one trajectory.</li>
 <li><strong>catalog.csv</strong> — one row per take: folder inside the zip, durations, sidecar text, and the slice counts of the source share.</li>
 <li><strong>channel_audit.csv</strong> — level of each array channel at the start, middle, and end of the raw array file.</li>
 <li><strong>processing_methodology.pdf</strong> — the two-page processing note from the collection.</li>
-<li><strong>dji_flip.json</strong>, <strong>dji_neo.json</strong>, <strong>dji_mini_4_pro.json</strong>, <strong>dji_matrice_350_rtk.json</strong>, <strong>dji_neo_and_mini_4_pro.json</strong>, <strong>dji_flip_neo_mini_4_pro_and_matrice_350.json</strong> — manufacturer sheets. The keys are the Portuguese field names from the source. These sheets are copied manufacturer data.</li>
+<li><strong>aircraft_specifications.json</strong> — one English file with the manufacturer sheets for Flip, Neo, Mini 4 Pro, and Matrice 350 RTK. Copied manufacturer data, not campaign measurements.</li>
 </ul>
 <h2>Recording</h2>
-<p>Each take has a mono Behringer reference (44.1 kHz, IEEE float32) and an eight-channel ReSpeaker array (16 kHz, 16-bit PCM). Microphone model names are absent from the collection. The processing note calls the array a six-microphone circular array. Channels 7 and 8 stay in the eight-channel files. Distances are the strings in the sidecar: 2m, 5m, 10m, and LIVRE. LIVRE means free flight. The collection has no range log and no trajectory log.</p>
+<p>Each take has a mono Behringer reference (44.1 kHz, IEEE float32) and an eight-channel ReSpeaker array (16 kHz, 16-bit PCM). Microphone model names are absent from the collection. The processing note calls the array a six-microphone circular array. Channels 7 and 8 stay in the eight-channel files. Distances are the strings in the sidecar: 2m, 5m, 10m, and free. The collection has no range log and no trajectory log.</p>
 <h2>Inside a zip</h2>
 <p>Every take folder holds the same five files. In flip.zip the 2 m take looks like this. The 5 m and 10 m folders, and the folders in the other zips, use the same five names.</p>
 <pre>flip/2m/
@@ -190,15 +199,14 @@ Description:
 ├── synchronized_reference.wav
 ├── synchronized_array.wav
 └── sidecar.json                aircraft, distance, timestamp, gains</pre>
-<p>The WAV bytes are stored uncompressed. <code>archive_dir</code> in catalog.csv is that folder.</p>
+<p>The WAV bytes are stored uncompressed. <code>archive_dir</code> in catalog.csv is that folder. Each sidecar uses English keys: timestamp, aircraft, distance, gains.</p>
 <h2>Reading a take</h2>
 <p><code>session_id</code> names the take. <code>raw_reference_s</code>, <code>raw_array_s</code>, <code>sync_reference_s</code>, and <code>sync_array_s</code> are container durations in seconds. <code>sync_duration_delta_s</code> is the synchronized reference duration minus the synchronized array duration. <code>reference_mid_rms_dbfs</code> is a 2.0 s window at the middle of the raw reference, in dBFS with full scale equal to 1.</p>
 <p><code>channel_audit.csv</code> has one row per take, channel (1–8), and window (start, mid, end). <code>channel_class</code> is varying, flat, near_silent, digital_zero, idle, stuck_constant, or mixed. A channel is varying when all three windows are signal, the loudest window is above −80 dBFS, and the three windows span at least 3 dB.</p>
 <h2>Limitations</h2>
 <ul>
-<li>The matrice350 sidecar still records the aircraft string DJI Flip. The archive name follows the folder and the file stem.</li>
-<li>Neo sidecars say DJI Neo 2. The sheet dji_neo.json describes DJI Neo (about 135 g).</li>
-<li>Flip sidecars say DJI FPV Flip. The sheet dji_flip.json names DJI Flip.</li>
+<li>Package sidecars correct labels that were wrong or Portuguese on the source share. The Matrice take source sidecar said DJI Flip; the package sidecar says DJI Matrice 350. Flip source sidecars said DJI FPV Flip; the package says DJI Flip. Source distance LIVRE is free in the package. The Matrice source distance "10m, 5m e 2m" is "10m, 5m and 2m".</li>
+<li>Neo session folders on the source share held a manufacturer sheet for DJI Neo (about 135 g), not Neo 2. That sheet is the dji_neo block in aircraft_specifications.json.</li>
 <li>Four synchronized pairs differ by at least 1 s: flip/5m (+1.79 s), neo2/5m (−4.46 s), mini4pro/5m (+10.56 s), and mini4pro_noguard_free (+1.31 s). matrice350 differs by −0.13 s. The other eight are within 0.12 s.</li>
 <li>mini4pro_noguard_free has no matched free flight with the guard on, so the missing guard is mixed with the flight pattern.</li>
 <li>The two multi-aircraft takes have no time marks that assign a segment to one airframe.</li>
