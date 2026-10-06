@@ -47,47 +47,52 @@ WEBDAV = "https://cloud.conceptio.ita.br/public.php/webdav/"
 WEBDAV_USER = "3pmRmz7CokJpZr5"
 ZENODO = "https://zenodo.org/api/deposit/depositions"
 
+# Prefer this draft when refreshing metadata or files. Do not publish it.
+DRAFT_ID = 23170386
 TITLE = (
-    "Indoor acoustic recordings of multirotor aircraft with a reference "
-    "microphone and an eight-channel array "
+    "Indoor Multirotor Acoustic Dataset for Drone Detection and Classification "
     "(DataSet_Arena_Indoor_v0.2_Extended_Time)"
 )
-DESCRIPTION = """<p>Indoor acoustic recordings of multirotor aircraft collected at the CONCEPTIO laboratory, Instituto Tecnológico de Aeronáutica, São José dos Campos (DataSet_Arena_Indoor_v0.2_Extended_Time).</p>
-<p>Thirteen takes were recorded with a mono Behringer reference channel (44.1 kHz, IEEE float32) and an eight-channel ReSpeaker array (16 kHz, 16-bit PCM). Microphone models are not named. The array is described as a six-microphone circular array; channels 7 and 8 remain in the eight-channel files. Raw reference audio totals 3165.70 s. Each condition is a single take. Distances are sidecar labels. No range or trajectory log is included.</p>
-<pre>
-flip.zip
-└── flip/
-    ├── 2m/
-    │   ├── raw_reference.wav            Behringer, mono, 44.1 kHz, float32
-    │   ├── raw_array.wav                ReSpeaker, 8 channels, 16 kHz, 16-bit
-    │   ├── synchronized_reference.wav
-    │   ├── synchronized_array.wav
-    │   └── sidecar.json                 aircraft, distance, timestamp, gains
-    ├── 5m/                              same five files
-    └── 10m/                             same five files
-neo2.zip
-└── neo2/{2m,5m,10m}/                    same five files
-mini4pro.zip
-└── mini4pro/{2m,5m,10m}/                same five files
-mini4pro_noguard_free.zip
-└── mini4pro_noguard_free/               same five files
-multi_neo2_mini4pro_free.zip
-└── multi_neo2_mini4pro_free/            same five files
-multi_flip_neo2_mini4pro_matrice_free.zip
-└── multi_flip_neo2_mini4pro_matrice_free/
-matrice350.zip
-└── matrice350/                          same five files; one trajectory labeled 10 m, 5 m, and 2 m
-catalog.csv                              session table
-channel_audit.csv                        array-channel levels
-processing_methodology.pdf               processing note
-dji_flip.json                            manufacturer sheet
-dji_neo.json
-dji_mini_4_pro.json
-dji_matrice_350_rtk.json
-dji_neo_and_mini_4_pro.json
-dji_flip_neo_mini_4_pro_and_matrice_350.json
-</pre>
-<p>The matrice350 sidecar records the aircraft string DJI Flip. Neo sidecars say DJI Neo 2; the manufacturer sheet describes DJI Neo. Synchronized file lengths differ by at least 1 s for flip/5m, neo2/5m, mini4pro/5m, and mini4pro_noguard_free.</p>"""
+DESCRIPTION = """<h2>Overview</h2>
+<p>This dataset is for acoustic drone detection and classification. It provides indoor multirotor recordings so that a mono reference microphone and an eight-channel array can be compared on the same take. The collection is DataSet_Arena_Indoor_v0.2_Extended_Time, recorded at the CONCEPTIO Laboratory, Instituto Tecnológico de Aeronáutica, São José dos Campos. Thirteen takes cover DJI Flip, DJI Neo 2, DJI Mini 4 Pro, and DJI Matrice 350, including free flights and two multi-aircraft takes. Raw reference audio totals 3165.70 s. Each condition is one take. The record does not include a detector score or a trained model.</p>
+<h2>Files</h2>
+<p>Audio is one zip per aircraft or flight, a few hundred megabytes each. Download the zip for the aircraft you need. <code>catalog.csv</code> is the index of every take.</p>
+<ul>
+<li><strong>flip.zip</strong>, <strong>neo2.zip</strong>, <strong>mini4pro.zip</strong> — DJI Flip, DJI Neo 2, and DJI Mini 4 Pro at the sidecar distances 2 m, 5 m, and 10 m. Each distance is its own folder.</li>
+<li><strong>mini4pro_noguard_free.zip</strong> — one Mini 4 Pro free flight with the propeller guard removed.</li>
+<li><strong>multi_neo2_mini4pro_free.zip</strong> — one free flight with Neo 2 and Mini 4 Pro together.</li>
+<li><strong>multi_flip_neo2_mini4pro_matrice_free.zip</strong> — one free flight with Flip, Neo 2, Mini 4 Pro, and Matrice together.</li>
+<li><strong>matrice350.zip</strong> — one DJI Matrice 350 pass. The sidecar distance is the whole string "10m, 5m e 2m", one trajectory.</li>
+<li><strong>catalog.csv</strong> — one row per take: folder inside the zip, durations, sidecar text, and the slice counts of the source share.</li>
+<li><strong>channel_audit.csv</strong> — level of each array channel at the start, middle, and end of the raw array file.</li>
+<li><strong>processing_methodology.pdf</strong> — the two-page processing note from the collection.</li>
+<li><strong>dji_flip.json</strong>, <strong>dji_neo.json</strong>, <strong>dji_mini_4_pro.json</strong>, <strong>dji_matrice_350_rtk.json</strong>, <strong>dji_neo_and_mini_4_pro.json</strong>, <strong>dji_flip_neo_mini_4_pro_and_matrice_350.json</strong> — manufacturer sheets. The keys are the Portuguese field names from the source. These sheets are copied manufacturer data.</li>
+</ul>
+<h2>Recording</h2>
+<p>Each take has a mono Behringer reference (44.1 kHz, IEEE float32) and an eight-channel ReSpeaker array (16 kHz, 16-bit PCM). Microphone model names are absent from the collection. The processing note calls the array a six-microphone circular array. Channels 7 and 8 stay in the eight-channel files. Distances are the strings in the sidecar: 2m, 5m, 10m, and LIVRE. LIVRE means free flight. The collection has no range log and no trajectory log.</p>
+<h2>Inside a zip</h2>
+<p>Every take folder holds the same five files. In flip.zip the 2 m take looks like this. The 5 m and 10 m folders, and the folders in the other zips, use the same five names.</p>
+<pre>flip/2m/
+├── raw_reference.wav           Behringer, mono, 44.1 kHz, float32
+├── raw_array.wav               ReSpeaker, 8 channels, 16 kHz, 16-bit
+├── synchronized_reference.wav
+├── synchronized_array.wav
+└── sidecar.json                aircraft, distance, timestamp, gains</pre>
+<p>The WAV bytes are stored uncompressed. <code>archive_dir</code> in catalog.csv is that folder.</p>
+<h2>Reading a take</h2>
+<p><code>session_id</code> names the take. <code>raw_reference_s</code>, <code>raw_array_s</code>, <code>sync_reference_s</code>, and <code>sync_array_s</code> are container durations in seconds. <code>sync_duration_delta_s</code> is the synchronized reference duration minus the synchronized array duration. <code>reference_mid_rms_dbfs</code> is a 2.0 s window at the middle of the raw reference, in dBFS with full scale equal to 1.</p>
+<p><code>channel_audit.csv</code> has one row per take, channel (1–8), and window (start, mid, end). <code>channel_class</code> is varying, flat, near_silent, digital_zero, idle, stuck_constant, or mixed. A channel is varying when all three windows are signal, the loudest window is above −80 dBFS, and the three windows span at least 3 dB.</p>
+<h2>Limitations</h2>
+<ul>
+<li>The matrice350 sidecar still records the aircraft string DJI Flip. The archive name follows the folder and the file stem.</li>
+<li>Neo sidecars say DJI Neo 2. The sheet dji_neo.json describes DJI Neo (about 135 g).</li>
+<li>Flip sidecars say DJI FPV Flip. The sheet dji_flip.json names DJI Flip.</li>
+<li>Four synchronized pairs differ by at least 1 s: flip/5m (+1.79 s), neo2/5m (−4.46 s), mini4pro/5m (+10.56 s), and mini4pro_noguard_free (+1.31 s). matrice350 differs by −0.13 s. The other eight are within 0.12 s.</li>
+<li>mini4pro_noguard_free has no matched free flight with the guard on, so the missing guard is mixed with the flight pattern.</li>
+<li>The two multi-aircraft takes have no time marks that assign a segment to one airframe.</li>
+<li>There is one take per condition, no noise-only recording, and no repeated trial. Level changes along a file are not a flight profile.</li>
+<li>The processing note used a 3 kHz high-pass only to find a metallic calibration strike. The note does not say the stored WAV samples were filtered, and it does not give room size, microphone coordinates, filter order, FFT length, or hop.</li>
+</ul>"""
 
 SPECS = [
     (
@@ -331,10 +336,16 @@ def upload_draft() -> None:
     matches = [
         item
         for item in listed.json()
-        if not item.get("submitted") and (item.get("metadata") or {}).get("title") == TITLE
+        if not item.get("submitted")
+        and (
+            item.get("id") == DRAFT_ID
+            or (item.get("metadata") or {}).get("title") == TITLE
+        )
     ]
     if matches:
-        chosen = max(matches, key=lambda item: item["id"])
+        chosen = next((item for item in matches if item.get("id") == DRAFT_ID), None)
+        if chosen is None:
+            chosen = max(matches, key=lambda item: item["id"])
         loaded = zenodo_request(session, "GET", f"{ZENODO}/{chosen['id']}", headers=headers)
         if loaded.status_code != 200:
             sys.exit(f"load deposition failed: HTTP {loaded.status_code}")
@@ -349,35 +360,7 @@ def upload_draft() -> None:
     dep_id = deposition["id"]
     bucket = deposition["links"]["bucket"]
 
-    metadata = {
-        "metadata": {
-            "title": TITLE,
-            "upload_type": "dataset",
-            "publication_date": "2026-10-05",
-            "description": DESCRIPTION,
-            "creators": [
-                {
-                    "name": "CONCEPTIO Laboratory",
-                    "affiliation": "Instituto Tecnológico de Aeronáutica, São José dos Campos",
-                }
-            ],
-            "keywords": [
-                "acoustic recording",
-                "multirotor",
-                "microphone array",
-                "indoor",
-                "unmanned aircraft",
-                "Behringer",
-                "ReSpeaker",
-            ],
-            "version": "0.2",
-            "language": "eng",
-            "notes": (
-                "Distance series are grouped by aircraft in flip.zip, neo2.zip, and mini4pro.zip. "
-                "matrice350.zip is the Matrice 350 trajectory."
-            ),
-        }
-    }
+    metadata = metadata_body()
     updated = zenodo_request(
         session,
         "PUT",
@@ -454,6 +437,39 @@ def upload_draft() -> None:
     print(json.dumps(summary, indent=2), flush=True)
 
 
+def metadata_body() -> dict:
+    return {
+        "metadata": {
+            "title": TITLE,
+            "upload_type": "dataset",
+            "publication_date": "2026-10-05",
+            "description": DESCRIPTION,
+            "creators": [
+                {
+                    "name": "CONCEPTIO Laboratory",
+                    "affiliation": "Instituto Tecnológico de Aeronáutica, São José dos Campos",
+                }
+            ],
+            "keywords": [
+                "acoustic drone detection",
+                "drone classification",
+                "multirotor",
+                "microphone array",
+                "indoor",
+                "unmanned aircraft",
+                "Behringer",
+                "ReSpeaker",
+            ],
+            "version": "0.2",
+            "language": "eng",
+            "notes": (
+                "One zip per aircraft or flight. catalog.csv is the index. "
+                "matrice350.zip is the Matrice 350 trajectory; its sidecar still says DJI Flip."
+            ),
+        }
+    }
+
+
 def main() -> None:
     action = sys.argv[1] if len(sys.argv) > 1 else "all"
     if action in ("all", "fetch"):
@@ -461,6 +477,9 @@ def main() -> None:
     if action in ("all", "zip"):
         session_archives()
     if action in ("all", "upload"):
+        upload_draft()
+    if action == "describe":
+        # A metadata PUT clears files already in the bucket, so this re-sends every file.
         upload_draft()
 
 

@@ -1,8 +1,8 @@
 This is an independent acoustic-detection data record and is not part of a software platform.
 
-# Indoor multirotor acoustic collection (CONCEPTIO / ITA)
+# Indoor Multirotor Acoustic Dataset for Drone Detection and Classification
 
-`DataSet_Arena_Indoor_v0.2_Extended_Time` is an indoor acoustic collection of thirteen multirotor takes. This repository documents that collection. It does not contain the audio, and it does not contain a manuscript or a detection result.
+`DataSet_Arena_Indoor_v0.2_Extended_Time` is an indoor acoustic collection of thirteen multirotor takes, prepared as a data record for acoustic drone detection and classification. This repository documents that collection. It does not contain the audio, and it does not contain a manuscript or a detection result.
 
 Author line, used here as a placeholder: CONCEPTIO Laboratory, Instituto Tecnológico de Aeronáutica, São José dos Campos.
 
@@ -22,15 +22,15 @@ The source share uses Portuguese folder names and keeps several derived copies o
 
 Included, for every take:
 
-| Archive file | Source |
+| File inside the take folder | Source |
 | --- | --- |
-| `sessions/<id>/raw_reference.wav` | `Brutos/<stem>.wav` |
-| `sessions/<id>/raw_array.wav` | `Brutos/respe_<stem>.wav` |
-| `sessions/<id>/synchronized_reference.wav` | `Sincronizados/<stem>.wav` |
-| `sessions/<id>/synchronized_array.wav` | `Sincronizados/respe_<stem>.wav` |
-| `sessions/<id>/sidecar.json` | the raw sidecar; the other two copies are identical |
+| `raw_reference.wav` | `Brutos/<stem>.wav` |
+| `raw_array.wav` | `Brutos/respe_<stem>.wav` |
+| `synchronized_reference.wav` | `Sincronizados/<stem>.wav` |
+| `synchronized_array.wav` | `Sincronizados/respe_<stem>.wav` |
+| `sidecar.json` | the raw sidecar; the other two copies are identical |
 
-`<id>` is the session id in `catalog.csv`. `archive_dir` is the directory inside the zip. The 2 m, 5 m, and 10 m takes of one aircraft share one zip. `relative_path` remains the original share path. On the Matrice take, the raw array and its sidecar in `Brutos` are named `Respe_` with a capital R. The synchronized copies of those two files use `respe_`.
+`archive_dir` in `catalog.csv` is that folder. The zip name is the aircraft or flight: `flip.zip`, `neo2.zip`, and `mini4pro.zip` each hold the 2 m, 5 m, and 10 m folders. The four other flights are one folder each. `relative_path` remains the original share path. On the Matrice take, the raw array and its sidecar in `Brutos` are named `Respe_` with a capital R. The synchronized copies of those two files use `respe_`.
 
 Also included: `processing_methodology.pdf` (the source file `METODOLOGIA_PROCESSAMENTO.pdf`) and the manufacturer JSON sheets, renamed under `specifications/`. The Mini 4 Pro sheet in the no-guard folder is byte-identical to `specifications/dji_mini_4_pro.json`, so it is not repeated. The JSON keys inside those sheets are still the Portuguese field names from the source. They are copied manufacturer data, not campaign measurements.
 
@@ -42,7 +42,7 @@ Left out:
 
 `catalog.csv` still records the slice and PNG counts of the source share. `channel_audit.csv` is a check of the raw array files. Neither file is a detector evaluation.
 
-Zenodo does not store folders, so each aircraft distance series is one zip: `flip.zip`, `neo2.zip`, and `mini4pro.zip`. Inside, `2m/`, `5m/`, and `10m/` each hold the five files above. Free flights and `matrice350.zip` are separate zips with the same five files. The processing note, the manufacturer JSON files, this README, the catalog, and the channel audit are separate files on the record.
+The record keeps one zip per aircraft or flight, so a reader can download a single aircraft. The processing note, the manufacturer JSON files, this README, the catalog, and the channel audit sit beside those zips. `catalog.csv` is the index.
 
 `scripts/build_and_upload_zenodo.py` builds that package from the share and uploads the draft. The script does not publish the record.
 
@@ -139,7 +139,7 @@ Upload type: `dataset`
 Title:
 
 ```text
-Indoor acoustic recordings of multirotor aircraft with a reference microphone and an eight-channel array (DataSet_Arena_Indoor_v0.2_Extended_Time)
+Indoor Multirotor Acoustic Dataset for Drone Detection and Classification (DataSet_Arena_Indoor_v0.2_Extended_Time)
 ```
 
 Creators (placeholder; replace before submission):
@@ -159,46 +159,50 @@ License: leave unset until the authors confirm it. The intended license, pending
 Keywords:
 
 ```text
-acoustic recording; multirotor; microphone array; indoor; unmanned aircraft; Behringer; ReSpeaker
+acoustic drone detection; drone classification; multirotor; microphone array; indoor; unmanned aircraft; Behringer; ReSpeaker
 ```
 
 Description:
 
 ```html
-<p>Indoor acoustic recordings of multirotor aircraft collected at the CONCEPTIO laboratory, Instituto Tecnológico de Aeronáutica, São José dos Campos (DataSet_Arena_Indoor_v0.2_Extended_Time).</p>
-<p>Thirteen takes were recorded with a mono Behringer reference channel (44.1 kHz, IEEE float32) and an eight-channel ReSpeaker array (16 kHz, 16-bit PCM). Microphone models are not named. The array is described as a six-microphone circular array; channels 7 and 8 remain in the eight-channel files. Raw reference audio totals 3165.70 s. Each condition is a single take. Distances are sidecar labels. No range or trajectory log is included.</p>
-<pre>
-flip.zip
-└── flip/
-    ├── 2m/
-    │   ├── raw_reference.wav            Behringer, mono, 44.1 kHz, float32
-    │   ├── raw_array.wav                ReSpeaker, 8 channels, 16 kHz, 16-bit
-    │   ├── synchronized_reference.wav
-    │   ├── synchronized_array.wav
-    │   └── sidecar.json                 aircraft, distance, timestamp, gains
-    ├── 5m/                              same five files
-    └── 10m/                             same five files
-neo2.zip
-└── neo2/{2m,5m,10m}/                    same five files
-mini4pro.zip
-└── mini4pro/{2m,5m,10m}/                same five files
-mini4pro_noguard_free.zip
-└── mini4pro_noguard_free/               same five files
-multi_neo2_mini4pro_free.zip
-└── multi_neo2_mini4pro_free/            same five files
-multi_flip_neo2_mini4pro_matrice_free.zip
-└── multi_flip_neo2_mini4pro_matrice_free/
-matrice350.zip
-└── matrice350/                          same five files; one trajectory labeled 10 m, 5 m, and 2 m
-catalog.csv                              session table
-channel_audit.csv                        array-channel levels
-processing_methodology.pdf               processing note
-dji_flip.json                            manufacturer sheet
-dji_neo.json
-dji_mini_4_pro.json
-dji_matrice_350_rtk.json
-dji_neo_and_mini_4_pro.json
-dji_flip_neo_mini_4_pro_and_matrice_350.json
-</pre>
-<p>The matrice350 sidecar records the aircraft string DJI Flip. Neo sidecars say DJI Neo 2; the manufacturer sheet describes DJI Neo. Synchronized file lengths differ by at least 1 s for flip/5m, neo2/5m, mini4pro/5m, and mini4pro_noguard_free.</p>
+<h2>Overview</h2>
+<p>This dataset is for acoustic drone detection and classification. It provides indoor multirotor recordings so that a mono reference microphone and an eight-channel array can be compared on the same take. The collection is DataSet_Arena_Indoor_v0.2_Extended_Time, recorded at the CONCEPTIO Laboratory, Instituto Tecnológico de Aeronáutica, São José dos Campos. Thirteen takes cover DJI Flip, DJI Neo 2, DJI Mini 4 Pro, and DJI Matrice 350, including free flights and two multi-aircraft takes. Raw reference audio totals 3165.70 s. Each condition is one take. The record does not include a detector score or a trained model.</p>
+<h2>Files</h2>
+<p>Audio is one zip per aircraft or flight, a few hundred megabytes each. Download the zip for the aircraft you need. <code>catalog.csv</code> is the index of every take.</p>
+<ul>
+<li><strong>flip.zip</strong>, <strong>neo2.zip</strong>, <strong>mini4pro.zip</strong> — DJI Flip, DJI Neo 2, and DJI Mini 4 Pro at the sidecar distances 2 m, 5 m, and 10 m. Each distance is its own folder.</li>
+<li><strong>mini4pro_noguard_free.zip</strong> — one Mini 4 Pro free flight with the propeller guard removed.</li>
+<li><strong>multi_neo2_mini4pro_free.zip</strong> — one free flight with Neo 2 and Mini 4 Pro together.</li>
+<li><strong>multi_flip_neo2_mini4pro_matrice_free.zip</strong> — one free flight with Flip, Neo 2, Mini 4 Pro, and Matrice together.</li>
+<li><strong>matrice350.zip</strong> — one DJI Matrice 350 pass. The sidecar distance is the whole string "10m, 5m e 2m", one trajectory.</li>
+<li><strong>catalog.csv</strong> — one row per take: folder inside the zip, durations, sidecar text, and the slice counts of the source share.</li>
+<li><strong>channel_audit.csv</strong> — level of each array channel at the start, middle, and end of the raw array file.</li>
+<li><strong>processing_methodology.pdf</strong> — the two-page processing note from the collection.</li>
+<li><strong>dji_flip.json</strong>, <strong>dji_neo.json</strong>, <strong>dji_mini_4_pro.json</strong>, <strong>dji_matrice_350_rtk.json</strong>, <strong>dji_neo_and_mini_4_pro.json</strong>, <strong>dji_flip_neo_mini_4_pro_and_matrice_350.json</strong> — manufacturer sheets. The keys are the Portuguese field names from the source. These sheets are copied manufacturer data.</li>
+</ul>
+<h2>Recording</h2>
+<p>Each take has a mono Behringer reference (44.1 kHz, IEEE float32) and an eight-channel ReSpeaker array (16 kHz, 16-bit PCM). Microphone model names are absent from the collection. The processing note calls the array a six-microphone circular array. Channels 7 and 8 stay in the eight-channel files. Distances are the strings in the sidecar: 2m, 5m, 10m, and LIVRE. LIVRE means free flight. The collection has no range log and no trajectory log.</p>
+<h2>Inside a zip</h2>
+<p>Every take folder holds the same five files. In flip.zip the 2 m take looks like this. The 5 m and 10 m folders, and the folders in the other zips, use the same five names.</p>
+<pre>flip/2m/
+├── raw_reference.wav           Behringer, mono, 44.1 kHz, float32
+├── raw_array.wav               ReSpeaker, 8 channels, 16 kHz, 16-bit
+├── synchronized_reference.wav
+├── synchronized_array.wav
+└── sidecar.json                aircraft, distance, timestamp, gains</pre>
+<p>The WAV bytes are stored uncompressed. <code>archive_dir</code> in catalog.csv is that folder.</p>
+<h2>Reading a take</h2>
+<p><code>session_id</code> names the take. <code>raw_reference_s</code>, <code>raw_array_s</code>, <code>sync_reference_s</code>, and <code>sync_array_s</code> are container durations in seconds. <code>sync_duration_delta_s</code> is the synchronized reference duration minus the synchronized array duration. <code>reference_mid_rms_dbfs</code> is a 2.0 s window at the middle of the raw reference, in dBFS with full scale equal to 1.</p>
+<p><code>channel_audit.csv</code> has one row per take, channel (1–8), and window (start, mid, end). <code>channel_class</code> is varying, flat, near_silent, digital_zero, idle, stuck_constant, or mixed. A channel is varying when all three windows are signal, the loudest window is above −80 dBFS, and the three windows span at least 3 dB.</p>
+<h2>Limitations</h2>
+<ul>
+<li>The matrice350 sidecar still records the aircraft string DJI Flip. The archive name follows the folder and the file stem.</li>
+<li>Neo sidecars say DJI Neo 2. The sheet dji_neo.json describes DJI Neo (about 135 g).</li>
+<li>Flip sidecars say DJI FPV Flip. The sheet dji_flip.json names DJI Flip.</li>
+<li>Four synchronized pairs differ by at least 1 s: flip/5m (+1.79 s), neo2/5m (−4.46 s), mini4pro/5m (+10.56 s), and mini4pro_noguard_free (+1.31 s). matrice350 differs by −0.13 s. The other eight are within 0.12 s.</li>
+<li>mini4pro_noguard_free has no matched free flight with the guard on, so the missing guard is mixed with the flight pattern.</li>
+<li>The two multi-aircraft takes have no time marks that assign a segment to one airframe.</li>
+<li>There is one take per condition, no noise-only recording, and no repeated trial. Level changes along a file are not a flight profile.</li>
+<li>The processing note used a 3 kHz high-pass only to find a metallic calibration strike. The note does not say the stored WAV samples were filtered, and it does not give room size, microphone coordinates, filter order, FFT length, or hop.</li>
+</ul>
 ```
