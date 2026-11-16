@@ -2,7 +2,7 @@ This is an independent acoustic-detection data record and is not part of a softw
 
 # Indoor Multirotor Acoustic Dataset for Drone Detection and Classification
 
-`DataSet_Arena_Indoor_v0.2_Extended_Time` is an indoor acoustic collection of thirteen multirotor takes, prepared as a data record for acoustic drone detection and classification. This repository documents that collection. It does not contain the audio, and it does not contain a manuscript or a detection result.
+`DataSet_Arena_Indoor_v0.2_Extended_Time` is an indoor acoustic collection of thirteen multirotor takes, prepared as a data record for acoustic drone detection and classification. This repository documents that collection. It does not contain the audio, and it does not contain a detection result. A preprint draft for Overleaf and arXiv is in `paper/` (`main.tex` and `references.bib`).
 
 Author line, used here as a placeholder: CONCEPTIO Laboratory, Instituto Tecnológico de Aeronáutica, São José dos Campos.
 

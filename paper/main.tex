@@ -1,0 +1,184 @@
+% Overleaf: upload this file and references.bib. Compiler: pdfLaTeX.
+% arXiv: primary category eess.AS. Upload the same two files. Do not upload audio.
+\documentclass[10pt,conference]{IEEEtran}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{booktabs}
+\usepackage{cite}
+\usepackage{url}
+\usepackage{siunitx}
+\sisetup{detect-weight=true,range-phrase=--}
+
+\begin{document}
+
+\title{CiO-Drone-Acoustic: An Indoor Multirotor Acoustic Dataset\\
+for Drone Detection and Classification}
+
+\author{%
+\IEEEauthorblockN{Gustavo Fagundes de Siqueira and Andre Rossi Kuroswiski}
+\IEEEauthorblockA{CONCEPTIO Laboratory,
+Instituto Tecnol\'ogico de Aeron\'autica\\
+S\~ao Jos\'e dos Campos, Brazil\\
+Dataset: \url{https://doi.org/10.5281/zenodo.23170386}\\
+Contact: A.\ R.\ Kuroswiski, ORCID 0000-0003-1549-2434}
+}
+
+\maketitle
+
+\begin{abstract}
+Acoustic drone detection and classification need recordings in which the aircraft identity and the sensing chain are stated with the audio.
+This data note documents CiO-Drone-Acoustic, an indoor collection of thirteen multirotor takes recorded at the CONCEPTIO Laboratory with a mono reference microphone and an eight-channel array on the same take.
+The release contains \SI{3165.70}{\second} of raw reference audio from DJI Flip, DJI Neo~2, DJI Mini~4 Pro, and DJI Matrice~350, including fixed sidecar distances, one unguarded free flight, and two multi-aircraft free flights.
+Each condition is a single take.
+The record gives file layout, container durations, a channel-level audit, and the known label and synchronization limits.
+It does not report a detector or a classifier score, and it does not include a trajectory or a range log.
+\end{abstract}
+
+\begin{IEEEkeywords}
+acoustic drone detection, drone classification, microphone array, multirotor, indoor recording
+\end{IEEEkeywords}
+
+\section{Introduction}
+Acoustic detection treats the aircraft as a sound source observed by microphones that are not on the airframe.
+A usable recording for that task has to name the aircraft, the microphones, and the condition attached to each file.
+Public acoustic UAV sets often serve a different measurement: an array carried by the aircraft for source localization in ego-noise~\cite{strauss2018dregon}, a fixed array with tracked source pose~\cite{jekaterynczuk2025uavirbase}, or short clips collected to train a detector~\cite{alemadi2019audio}.
+Those designs do not replace a paired indoor recording of the same take on a reference channel and a multichannel array.
+
+CiO-Drone-Acoustic is that paired indoor collection.
+Thirteen takes were recorded at the CONCEPTIO Laboratory, Instituto Tecnol\'ogico de Aeron\'autica, S\~ao Jos\'e dos Campos, and deposited at \url{https://doi.org/10.5281/zenodo.23170386}.
+The contribution of this note is the description of that deposit:
+\begin{enumerate}
+\item the sensor chain, the thirteen conditions, and the English file layout of the release;
+\item container durations, the reference--array length comparison, and a three-window audit of the eight array channels;
+\item the limits that a detection experiment must not ignore, including one take per condition and the absence of a trajectory log.
+\end{enumerate}
+No detection or classification accuracy is computed.
+
+\section{Recording}
+Each take has two simultaneous captures.
+The reference is a mono Behringer channel at \SI{44.1}{\kilo\hertz}, IEEE float32, WAVE format~3.
+The array is a ReSpeaker recording with eight channels at \SI{16}{\kilo\hertz}, 16-bit PCM.
+Neither microphone model is named in the collection.
+The two-page processing note included in the deposit calls the array a six-microphone circular array and says that a \SI{3}{\kilo\hertz} high-pass was used only to find a metallic calibration strike.
+The note does not state that the stored samples were filtered, and it does not give room size, microphone coordinates, filter order, or a flight profile.
+Channels~7 and~8 remain in the eight-channel files.
+Gains stored with every take are eight ones.
+
+Distances in the release are the strings written beside the audio: \texttt{2m}, \texttt{5m}, \texttt{10m}, and \texttt{free}.
+There is no range log.
+\texttt{free} denotes free flight.
+The Matrice distance string is the whole trajectory, ``10m, 5m and 2m,'' not three separate measured ranges.
+Twelve takes are timestamped on 22~May~2026.
+The Matrice take is timestamped on 16~September~2026.
+
+The processing note also describes one-second slices, a six-channel mono export, and a Welch power-spectral-density board.
+The Zenodo package keeps the raw and synchronized WAV files and omits the slices, the mono split, and the spectrogram images.
+On the takes that were checked, each slice is an exact cut of the synchronized audio.
+The note does not give the FFT length, hop, or colormap of the images, so the release keeps the audio those images were drawn from.
+
+\section{Release layout}
+Audio is one zip per aircraft or flight.
+\texttt{flip.zip}, \texttt{neo2.zip}, and \texttt{mini4pro.zip} each contain folders \texttt{2m}, \texttt{5m}, and \texttt{10m}.
+The unguarded Mini~4 Pro flight, the two multi-aircraft flights, and the Matrice pass are one folder each.
+Every folder holds the same five files, stored without recompression of the WAV bytes:
+\begin{itemize}
+\item \texttt{raw\_reference.wav} and \texttt{raw\_array.wav};
+\item \texttt{synchronized\_reference.wav} and \texttt{synchronized\_array.wav};
+\item \texttt{sidecar.json}, with fields \texttt{timestamp}, \texttt{aircraft}, \texttt{distance}, and \texttt{gains}.
+\end{itemize}
+\texttt{catalog.csv} is the index, \texttt{channel\_audit.csv} stores the array audit, and \texttt{aircraft\_specifications.json} merges the manufacturer sheets into English.
+Those sheets are copied manufacturer data, not measurements from this campaign.
+
+Table~\ref{tab:takes} lists the thirteen takes.
+Raw-reference duration is the container length of \texttt{raw\_reference.wav}.
+The synchronization delta is the synchronized reference duration minus the synchronized array duration, in seconds.
+It is a difference of container lengths, not a re-measured residual of the calibration impulse.
+Mid-file level is a \SI{2.0}{\second} window of the raw reference starting one second before the temporal midpoint, in dBFS with full scale equal to amplitude~1.
+Six-decimal values are in \texttt{catalog.csv}.
+
+\begin{table}[t]
+\caption{Takes in CiO-Drone-Acoustic.
+Durations are rounded from \texttt{catalog.csv}.
+Positive $\Delta$ means the synchronized reference container is longer than the synchronized array container.
+The second multi-aircraft identifier is \texttt{multi\_flip\_neo2\_mini4pro\_matrice\_free}.}
+\label{tab:takes}
+\centering
+\scriptsize
+\setlength{\tabcolsep}{2.5pt}
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+Take & Raw ref.\ (s) & $\Delta$ (s) & Mid (dBFS) \\
+\midrule
+Flip, 2\,m & 202.41 & $-0.10$ & $-37.04$ \\
+Flip, 5\,m & 195.25 & $1.79$ & $-40.62$ \\
+Flip, 10\,m & 193.23 & $-0.11$ & $-38.56$ \\
+Neo~2, 2\,m & 195.09 & $-0.03$ & $-37.08$ \\
+Neo~2, 5\,m & 186.51 & $-4.46$ & $-40.14$ \\
+Neo~2, 10\,m & 196.82 & $0.03$ & $-40.90$ \\
+Mini~4 Pro, 2\,m & 196.65 & $-0.04$ & $-36.77$ \\
+Mini~4 Pro, 5\,m & 194.44 & $10.56$ & $-38.69$ \\
+Mini~4 Pro, 10\,m & 194.35 & $-0.04$ & $-39.43$ \\
+Mini~4 Pro, free, no guard & 186.30 & $1.31$ & $-38.47$ \\
+Neo~2 + Mini~4 Pro, free & 227.86 & $-0.06$ & $-39.29$ \\
+Four aircraft, free & 374.41 & $-0.09$ & $-35.43$ \\
+Matrice~350, one pass & 622.38 & $-0.13$ & $-32.68$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Across the thirteen takes the raw reference totals \SI{3165.70}{\second}, the raw array \SI{3159.04}{\second}, the synchronized reference \SI{2982.16}{\second}, and the synchronized array \SI{2973.53}{\second}.
+The source share also contains 2976 reference slices and 2967 array slices.
+Those derived files are counted in the catalog and are not in the zip archives.
+
+\section{Channel audit}
+The audit reads the raw eight-channel file at three windows of \SI{2.0}{\second} (32{,}000 frames): from \SI{1.0}{\second}, from one second before mid-file, and from three seconds before the end.
+A window is \texttt{digital\_zero} when the peak is 0, \texttt{idle} when the peak is at most 2, \texttt{stuck\_constant} when every sample is equal, and \texttt{signal} otherwise.
+Levels are dBFS relative to full-scale integer 32768.
+A channel is \texttt{varying} only when all three windows are \texttt{signal}, the loudest window is above \SI{-80}{\decibel}FS, and the three windows span at least \SI{3}{\decibel}.
+Other classes in the file are \texttt{flat}, \texttt{near\_silent}, \texttt{mixed}, and the window labels above when a channel is entirely in that state.
+
+Varying channels are not the same set on every take.
+On the Flip takes they are channels 1, 5--8 at 2\,m; 5--8 at 5\,m; and 1--5 at 10\,m.
+On Neo~2 they are 1, 2, 7, and 8 at 2\,m, with channels 5 and 6 digital zero and still present in the file; 3--6 at 5\,m; and 1, 2, 3, 7, and 8 at 10\,m.
+On Mini~4 Pro they are 1--3, 7, and 8 at 2\,m; 3--7 at 5\,m; and 1--5 at 10\,m.
+The unguarded free flight varies only on channel~7.
+Both multi-aircraft takes vary on channels 1--5.
+The Matrice pass varies on channels 1 and 5--8.
+Its channel~2 is \texttt{mixed} (span \SI{0.83}{\decibel}, loudest window \SI{-60.89}{\decibel}FS).
+Its channels~3 and~4 are \texttt{near\_silent} (loudest windows \SI{-83.08}{\decibel}FS and \SI{-86.88}{\decibel}FS).
+
+On the twelve May takes, middle windows of varying channels lie between $-55.67$ and \SI{-47.01}{\decibel}FS.
+Start windows of those channels lie between $-67.83$ and \SI{-60.39}{\decibel}FS, and end windows span $-62.38$ to \SI{-34.16}{\decibel}FS, so level is not monotonic.
+On the Matrice pass, middle windows of the varying channels lie between $-39.18$ and \SI{-38.11}{\decibel}FS.
+These levels are not a flight profile.
+
+\section{Limits of use}
+Four synchronized pairs differ by at least one second: \texttt{flip\_5m} by $+1.79$\,s, \texttt{neo2\_5m} by $-4.46$\,s, \texttt{mini4pro\_5m} by $+10.56$\,s, and \texttt{mini4pro\_noguard\_free} by $+1.31$\,s.
+The other nine pairs, including Matrice ($-0.13$\,s), differ by at most \SI{0.13}{\second}.
+Slice indexes are not a shared time base on the four pairs that differ by a second or more.
+\texttt{neo2\_2m} differs by only \SI{0.03}{\second}, but the floors still differ (179 reference slices and 180 array slices).
+The Matrice take does the same (608 and 609).
+
+The package sidecars correct strings that were wrong or Portuguese on the source share.
+Flip source sidecars said ``DJI FPV Flip''; the package says DJI Flip.
+The Matrice source sidecar said ``DJI Flip'' and ``10m, 5m e 2m''; the package says DJI Matrice~350 and ``10m, 5m and 2m.''
+The manufacturer block stored with the Neo~2 folders describes DJI Neo at about \SI{135}{\gram}, not Neo~2.
+The unguarded Mini~4 Pro flight has no matched free flight with the guard fitted, so the missing guard is mixed with the flight pattern.
+The two multi-aircraft takes have no time marks that assign a segment to one airframe.
+There is one take per condition, no noise-only recording, and no repeated trial.
+
+\section{Conclusion}
+CiO-Drone-Acoustic releases thirteen indoor multirotor takes, \SI{3165.70}{\second} of raw reference audio, recorded so a mono reference channel and an eight-channel array can be compared on the same take.
+The deposit states the aircraft, the file layout, the container durations, and the channel audit.
+Detection accuracy, classification accuracy, microphone coordinates, and flight trajectories are outside what this collection measures.
+
+\section*{Data availability}
+The audio, catalog, channel audit, processing note, and manufacturer sheet are at \url{https://doi.org/10.5281/zenodo.23170386} (CiO-Drone-Acoustic, version 0.1).
+The Zenodo license field on that record is CC0.
+Please cite this note and the dataset DOI when using the recordings.
+
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+
+\end{document}
