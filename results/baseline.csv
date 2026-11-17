@@ -1,0 +1,13 @@
+protocol,model,train_sensor,test_sensor,folds,n_test,balanced_accuracy,macro_f1
+random,logreg,reference,reference,5,1528,0.997,0.997
+random,logreg,array,array,5,1531,0.999,0.999
+LODO,logreg,reference,reference,3,1528,0.995,0.995
+LODO-cross-sensor,logreg,reference,array,3,1531,0.855,0.841
+LODO-cross-sensor,logreg,array,reference,3,1528,0.972,0.972
+LODO,logreg,array,array,3,1531,0.995,0.995
+random,rf,reference,reference,5,1528,0.994,0.994
+random,rf,array,array,5,1531,0.999,0.999
+LODO,rf,reference,reference,3,1528,0.989,0.989
+LODO-cross-sensor,rf,reference,array,3,1531,0.896,0.893
+LODO-cross-sensor,rf,array,reference,3,1528,0.778,0.772
+LODO,rf,array,array,3,1531,0.998,0.998

@@ -1,0 +1,37 @@
+protocol,train_sensor,test_sensor,true,pred,count
+LODO,reference,reference,DJI Flip,DJI Flip,525
+LODO,reference,reference,DJI Flip,DJI Neo 2,2
+LODO,reference,reference,DJI Flip,DJI Mini 4 Pro,0
+LODO,reference,reference,DJI Neo 2,DJI Flip,1
+LODO,reference,reference,DJI Neo 2,DJI Neo 2,487
+LODO,reference,reference,DJI Neo 2,DJI Mini 4 Pro,4
+LODO,reference,reference,DJI Mini 4 Pro,DJI Flip,0
+LODO,reference,reference,DJI Mini 4 Pro,DJI Neo 2,0
+LODO,reference,reference,DJI Mini 4 Pro,DJI Mini 4 Pro,509
+LODO-cross-sensor,reference,array,DJI Flip,DJI Flip,302
+LODO-cross-sensor,reference,array,DJI Flip,DJI Neo 2,150
+LODO-cross-sensor,reference,array,DJI Flip,DJI Mini 4 Pro,73
+LODO-cross-sensor,reference,array,DJI Neo 2,DJI Flip,0
+LODO-cross-sensor,reference,array,DJI Neo 2,DJI Neo 2,503
+LODO-cross-sensor,reference,array,DJI Neo 2,DJI Mini 4 Pro,5
+LODO-cross-sensor,reference,array,DJI Mini 4 Pro,DJI Flip,0
+LODO-cross-sensor,reference,array,DJI Mini 4 Pro,DJI Neo 2,0
+LODO-cross-sensor,reference,array,DJI Mini 4 Pro,DJI Mini 4 Pro,498
+LODO-cross-sensor,array,reference,DJI Flip,DJI Flip,524
+LODO-cross-sensor,array,reference,DJI Flip,DJI Neo 2,3
+LODO-cross-sensor,array,reference,DJI Flip,DJI Mini 4 Pro,0
+LODO-cross-sensor,array,reference,DJI Neo 2,DJI Flip,7
+LODO-cross-sensor,array,reference,DJI Neo 2,DJI Neo 2,479
+LODO-cross-sensor,array,reference,DJI Neo 2,DJI Mini 4 Pro,6
+LODO-cross-sensor,array,reference,DJI Mini 4 Pro,DJI Flip,6
+LODO-cross-sensor,array,reference,DJI Mini 4 Pro,DJI Neo 2,20
+LODO-cross-sensor,array,reference,DJI Mini 4 Pro,DJI Mini 4 Pro,483
+LODO,array,array,DJI Flip,DJI Flip,523
+LODO,array,array,DJI Flip,DJI Neo 2,1
+LODO,array,array,DJI Flip,DJI Mini 4 Pro,1
+LODO,array,array,DJI Neo 2,DJI Flip,0
+LODO,array,array,DJI Neo 2,DJI Neo 2,503
+LODO,array,array,DJI Neo 2,DJI Mini 4 Pro,5
+LODO,array,array,DJI Mini 4 Pro,DJI Flip,1
+LODO,array,array,DJI Mini 4 Pro,DJI Neo 2,0
+LODO,array,array,DJI Mini 4 Pro,DJI Mini 4 Pro,497

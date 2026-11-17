@@ -1,0 +1,7 @@
+sensor,session_id,n,DJI Flip,DJI Neo 2,DJI Mini 4 Pro
+reference,mini4pro_noguard_free,162,0.0,0.0,1.0
+reference,multi_neo2_mini4pro_free,199,0.0,0.095,0.905
+reference,multi_flip_neo2_mini4pro_matrice_free,347,0.037,0.133,0.83
+array,mini4pro_noguard_free,160,0.0,0.0,1.0
+array,multi_neo2_mini4pro_free,199,0.0,0.111,0.889
+array,multi_flip_neo2_mini4pro_matrice_free,348,0.075,0.121,0.805
