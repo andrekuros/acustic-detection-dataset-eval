@@ -1,0 +1,40 @@
+session_id,file,duration_s,int16_grid,dropouts,dropout_total_s,longest_dropout_s,dropout_starts_s,clipped_samples,peak_dbfs
+flip_2m,raw_reference,202.406,True,3,0.6,0.3,3.7 3.9 4.4,0,-4.57
+flip_2m,synchronized_reference,193.711,True,0,0.0,0,,0,-4.57
+flip_2m,raw_array,203.008,True,,,,,0,-18.21
+flip_5m,raw_reference,195.251,True,5,4.0,2.3,0.7 1.5 2.4 3.5 189.3,0,-4.94
+flip_5m,synchronized_reference,184.092,True,1,0.4,0.4,183.5,0,-4.94
+flip_5m,raw_array,197.76,True,,,,,0,-18.85
+flip_10m,raw_reference,193.234,True,1,6.8,6.8,1.1,0,-4.29
+flip_10m,synchronized_reference,180.352,True,0,0.0,0,,0,-4.29
+flip_10m,raw_array,194.112,True,,,,,0,-18.85
+neo2_2m,raw_reference,195.092,True,1,7.6,7.6,1.5,0,-3.94
+neo2_2m,synchronized_reference,179.994,True,0,0.0,0,,0,-3.94
+neo2_2m,raw_array,193.92,True,,,,,0,-19.01
+neo2_5m,raw_reference,186.515,True,4,4.0,1.5,3.4 5.0 5.4 8.3,0,-5.37
+neo2_5m,synchronized_reference,172.35,True,0,0.0,0,,0,-5.37
+neo2_5m,raw_array,185.408,True,,,,,0,-18.85
+neo2_10m,raw_reference,196.819,True,20,23.0,5.6,0.4 2.7 4.3 5.7 9.9 46.4 49.0 49.3 50.5 56.0 56.2 56.5 58.2 58.8 59.2 75.1 75.6 76.4 80.0 169.1,0,-4.73
+neo2_10m,synchronized_reference,182.365,True,15,18.2,5.6,35.9 38.5 38.8 40.0 45.5 45.7 46.0 47.7 48.3 48.7 64.6 65.1 65.9 69.5 158.6,0,-4.73
+neo2_10m,raw_array,195.84,True,,,,,0,-18.89
+mini4pro_2m,raw_reference,196.645,True,3,7.1,6.0,1.0 7.1 43.4,0,-4.8
+mini4pro_2m,synchronized_reference,180.126,True,1,0.1,0.1,35.3,0,-4.8
+mini4pro_2m,raw_array,193.28,True,,,,,0,-18.85
+mini4pro_5m,raw_reference,194.439,True,4,5.9,4.6,0.8 5.0 5.2 9.9,0,-4.94
+mini4pro_5m,synchronized_reference,180.359,True,1,0.1,0.1,16.9,0,-4.94
+mini4pro_5m,raw_array,192.768,True,,,,,0,-18.85
+mini4pro_10m,raw_reference,194.352,True,3,6.2,3.6,1.1 3.6 8.0,0,-4.09
+mini4pro_10m,synchronized_reference,179.844,True,1,0.1,0.1,177.3,0,-4.09
+mini4pro_10m,raw_array,193.216,True,,,,,0,-18.89
+mini4pro_noguard_free,raw_reference,186.297,True,3,3.8,2.8,3.4 7.5 179.6,0,-5.25
+mini4pro_noguard_free,synchronized_reference,172.013,True,1,0.2,0.2,169.3,0,-5.25
+mini4pro_noguard_free,raw_array,185.152,True,,,,,0,-20.98
+multi_neo2_mini4pro_free,raw_reference,227.861,True,2,1.7,1.6,8.9 9.2,0,-4.08
+multi_neo2_mini4pro_free,synchronized_reference,209.421,True,0,0.0,0,,0,-4.08
+multi_neo2_mini4pro_free,raw_array,223.616,True,,,,,0,-18.85
+multi_flip_neo2_mini4pro_matrice_free,raw_reference,374.408,True,11,8.2,1.8,0.1 0.3 1.6 1.9 7.0 8.3 15.6 19.7 331.6 332.9 334.9,0,-4.78
+multi_flip_neo2_mini4pro_matrice_free,synchronized_reference,358.601,True,5,5.1,1.8,5.8 9.8 321.7 323.1 325.0,0,-4.78
+multi_flip_neo2_mini4pro_matrice_free,raw_array,373.824,True,,,,,0,-18.9
+matrice350,raw_reference,622.383,True,15,7.2,2.6,0.4 556.5 561.1 561.8 564.2 564.4 564.9 566.0 566.2 566.8 567.1 571.3 577.5 577.7 610.9,0,-3.36
+matrice350,synchronized_reference,608.928,True,17,6.7,2.6,546.8 551.4 552.1 554.4 554.7 555.1 555.4 556.3 556.5 557.1 557.4 560.4 561.5 562.5 567.8 568.0 601.2,0,-3.36
+matrice350,raw_array,627.136,True,,,,,0,-18.85

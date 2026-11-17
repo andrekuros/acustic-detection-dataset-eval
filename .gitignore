@@ -8,3 +8,7 @@ paper/*.blg
 paper/*.log
 paper/*.out
 paper/*.pdf
+data/
+results/features.npz
+paper/*.fdb_latexmk
+paper/*.fls

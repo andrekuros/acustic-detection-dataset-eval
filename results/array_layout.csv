@@ -1,0 +1,14 @@
+session_id,pattern,acoustic_channels,n_acoustic,rotation_to_canonical,median_r_with_reference
+flip_2m,ACDDAAAA,1 5 6 7 8,5,4,0.578
+flip_5m,DDDDAAAA,5 6 7 8,4,,-0.08
+flip_10m,AAAAACDD,1 2 3 4 5,5,0,0.552
+neo2_2m,AACDDDAA,1 2 7 8,4,,0.588
+neo2_5m,DDAAAACD,3 4 5 6,4,,-0.162
+neo2_10m,AAACDDAA,1 2 3 7 8,5,6,0.318
+mini4pro_2m,AAACDDAA,1 2 3 7 8,5,6,0.576
+mini4pro_5m,DDAAAAAC,3 4 5 6 7,5,2,0.3
+mini4pro_10m,AAAAACDD,1 2 3 4 5,5,0,0.675
+mini4pro_noguard_free,DDDDDDAC,7,1,,0.217
+multi_neo2_mini4pro_free,AAAAACDD,1 2 3 4 5,5,0,0.496
+multi_flip_neo2_mini4pro_matrice_free,AAAAACDD,1 2 3 4 5,5,0,0.871
+matrice350,ACDDAAAA,1 5 6 7 8,5,4,0.287

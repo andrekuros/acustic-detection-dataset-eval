@@ -214,3 +214,24 @@ Description:
 <li>The processing note used a 3 kHz high-pass only to find a metallic calibration strike. The note does not say the stored WAV samples were filtered, and it does not give room size, microphone coordinates, filter order, FFT length, or hop.</li>
 </ul>
 ```
+
+## Technical validation (`analysis/`, `results/`)
+
+The scripts in `analysis/` re-measure the deposit from the public Zenodo zips and produce every number and figure in `paper/main.tex`. Unzip the seven audio zips into one folder and point `CIO_DATA` at it, then run from the repository root, in this order:
+
+```bash
+export CIO_DATA=/path/to/unzipped   # contains flip/, neo2/, mini4pro/, matrice350/, ...
+python3 analysis/integrity.py       # format, clipping, reference dropouts, array channel layout
+python3 analysis/sync_check.py      # measured reference-array offset and clock drift
+python3 analysis/spectra_levels.py  # long-term spectra, dominant frequency, level vs distance
+python3 analysis/features.py        # 1-s log-mel features (both sensors at 16 kHz)
+python3 analysis/baseline.py        # 3-class baseline: random, leave-one-distance-out, cross-sensor
+python3 analysis/figures.py         # paper/figures/*.pdf
+```
+
+Requires numpy, scipy, scikit-learn, matplotlib. Outputs in `results/`:
+
+- `array_layout.csv` — which WAV slots carry sound in each take. Slot order rotates between takes (ReSpeaker driver fault); use this map, not slot indices.
+- `sync_summary.csv`, `sync_windows.csv` — measured lag of the synchronized array relative to the synchronized reference. Four takes are offset by 0.4–3.6 s (`flip_5m`, `neo2_5m`, `mini4pro_5m`, `mini4pro_noguard_free`); all drift by roughly 180–370 ppm. `sync_duration_delta_s` in `catalog.csv` does not predict the offset.
+- `integrity.csv` — reference dropouts (≤ 2 LSB while the array still records the aircraft), notably 18.2 s in `neo2_10m`.
+- `levels.csv`, `ltas.npz`, `features.npz`, `baseline*.csv`.
